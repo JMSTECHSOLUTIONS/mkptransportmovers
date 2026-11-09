@@ -1,0 +1,2429 @@
+<!-- ... existing code ... -->
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKP Trucking Service - Professional Transportation & Logistics Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mkpRed: '#dc2626',
+                        mkpDarkRed: '#991b1b',
+                        mkpBlue: '#1e3a8a',
+                        mkpOrange: '#f97316',
+                        mkpDark: '#0f172a'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Chart.js para sa Sales Reports & Analytics -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom Dot Grid Pattern */
+        .bg-dots {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        /* Custom Geometric Polygon Clip-paths */
+        .clip-triangle-1 {
+            clip-path: polygon(0 0, 100% 0, 0 100%);
+        }
+        .clip-triangle-2 {
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        }
+        /* Tab Transition Animations */
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tab-animate {
+            animation: fadeInSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+            #lbImg{max-width:100%;max-height:calc(100vh - 110px);margin:auto;cursor:zoom-in}
+        #lbImg.lb-zoom{max-width:none;max-height:none;cursor:zoom-out}
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased selection:bg-mkpRed selection:text-white">
+
+    <!-- Notification Toast Box -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center space-x-3 border-l-4 border-mkpRed">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-mkpRed text-xl"></i>
+        <div>
+            <h4 id="toastTitle" class="font-bold text-sm">System Notice</h4>
+            <p id="toastMsg" class="text-xs text-slate-300">Your action was completed successfully.</p>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-12 h-12 bg-gradient-to-tr from-mkpRed to-mkpDarkRed rounded-xl flex items-center justify-center text-white shadow-md group-hover:scale-105 transition">
+                    <i class="fa-solid fa-truck-moving text-2xl"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight text-slate-900">MKP <span class="text-mkpRed">TRUCKING</span></span>
+                    <span class="block text-[10px] tracking-widest font-semibold uppercase text-slate-500">Service & Logistics</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden lg:flex items-center space-x-8 font-medium text-sm text-slate-600">
+                <a href="#home" class="hover:text-mkpRed transition">Home</a>
+                <a href="#about" class="hover:text-mkpRed transition">About Us</a>
+                <a href="#services" class="hover:text-mkpRed transition">Services</a>
+                <a href="#why-us" class="hover:text-mkpRed transition">Why Choose Us</a>
+                <a href="#contact" class="hover:text-mkpRed transition">Contact Us</a>
+            </nav>
+
+            <!-- CTA Buttons -->
+            <div class="hidden md:flex items-center space-x-3">
+                <a href="#contact" class="bg-mkpRed hover:bg-red-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-red-500/20 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>Instant Booking</span>
+                </a>
+                <button onclick="openMessenger()" class="bg-[#0084ff] hover:bg-[#0073e6] text-white px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg transition flex items-center space-x-2" title="Chat with us on Messenger">
+                    <i class="fa-brands fa-facebook-messenger"></i>
+                    <span>Customer Support</span>
+                </button>
+                <button onclick="adminEntryPoint()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg transition flex items-center space-x-2" title="Admin Login">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>Admin</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="menuBtn" class="lg:hidden text-slate-700 focus:outline-none p-2">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-b border-slate-200 px-6 py-4 space-y-3 shadow-xl">
+            <a href="#home" class="block text-slate-700 font-medium py-1 hover:text-mkpRed">Home</a>
+            <a href="#about" class="block text-slate-700 font-medium py-1 hover:text-mkpRed">About Us</a>
+            <a href="#services" class="block text-slate-700 font-medium py-1 hover:text-mkpRed">Services</a>
+            <a href="#why-us" class="block text-slate-700 font-medium py-1 hover:text-mkpRed">Why Choose Us</a>
+            <a href="#contact" class="block text-slate-700 font-medium py-1 hover:text-mkpRed">Contact Us</a>
+            <div class="pt-2 border-t border-slate-100 flex flex-col space-y-2">
+                <a href="#contact" class="bg-mkpRed text-white text-center py-2.5 rounded-xl font-semibold shadow">Instant Booking Portal</a>
+                <button onclick="openMessenger()" class="bg-[#0084ff] text-white text-center py-2.5 rounded-xl font-semibold shadow flex items-center justify-center space-x-2">
+                    <i class="fa-brands fa-facebook-messenger"></i><span>Customer Support</span>
+                </button>
+                <button onclick="adminEntryPoint()" class="bg-slate-900 text-white text-center py-2.5 rounded-xl font-semibold shadow flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-user-shield"></i><span>Admin Login</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Poster / Brochure Cover Hero Section -->
+    <section id="home" class="relative bg-white py-16 lg:py-28 overflow-hidden bg-dots border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <!-- Poster Box Container -->
+            <div class="relative bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[600px] items-center">
+                
+                <!-- Background Fleet Truck Overlay -->
+                <div class="absolute inset-0 z-0 opacity-20 pointer-events-none flex items-center justify-end overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1586191306917-744007b8979c?auto=format&fit=crop&w=1200&q=80" 
+                         onerror="this.src='https://placehold.co/1200x800/e2e8f0/475569?text=MKP+Fleet+Trucks'" 
+                         alt="MKP White Fleet Trucks" 
+                         class="w-full h-full object-cover mix-blend-multiply">
+                </div>
+
+                <!-- Left Geometric Red & Grey Overlays -->
+                <div class="lg:col-span-6 relative h-full min-h-[400px] lg:min-h-[550px] flex items-center justify-center p-6 overflow-hidden">
+                    <div class="absolute top-0 left-0 w-72 h-72 bg-mkpRed opacity-90 clip-triangle-1 transform -rotate-12 scale-110 shadow-2xl"></div>
+                    <div class="absolute bottom-4 left-8 w-64 h-64 bg-slate-900 opacity-85 clip-triangle-2 transform rotate-45 shadow-xl"></div>
+                    <div class="absolute top-20 left-24 w-48 h-48 bg-red-700 opacity-95 clip-triangle-1 transform rotate-12"></div>
+                    
+                    <!-- Embedded Fleet Truck Photo -->
+                    <div class="relative z-10 w-full max-w-md h-72 sm:h-80 rounded-2xl overflow-hidden shadow-2xl border-4 border-white transform -rotate-2 hover:rotate-0 transition duration-500">
+                        <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=800&q=80" 
+                             onerror="this.src='https://placehold.co/800x600/cbd5e1/1e293b?text=MKP+Truck+Highway'" 
+                             alt="Truck on Highway" 
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-4">
+                            <span class="text-white text-xs font-bold bg-mkpRed/90 px-3 py-1 rounded-full shadow-lg">
+                                <i class="fa-solid fa-truck-ramp-box mr-1"></i> Hydraulic Lifter Equipped
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content Typography Section -->
+                <div class="lg:col-span-6 p-8 lg:p-12 space-y-6 relative z-10 text-center lg:text-left">
+                    <div class="inline-flex items-center space-x-2 bg-red-100 text-mkpRed px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>MKP Trucking Service Portfolio</span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h1 class="text-4xl sm:text-6xl font-black tracking-tighter text-slate-900 uppercase drop-shadow-sm">
+                            MKP <span class="text-mkpRed">TRANSPORT</span>
+                        </h1>
+                        <p class="text-xs sm:text-sm font-extrabold tracking-widest text-slate-700 uppercase">
+                            Trucking & Logistics Service Provider
+                        </p>
+                    </div>
+
+                    <p class="text-base sm:text-lg font-semibold text-slate-600 leading-snug">
+                        "Reliable Transportation. Safe Handling. Seamless Delivery."
+                    </p>
+
+                    <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                        Pioneering simple, complete, and specialized moving services for residential relocation, condominium moving, office transfers, warehouse inventory, and commercial goods delivery.
+                    </p>
+
+                    <!-- Contact Numbers Box -->
+                    <div class="bg-slate-900 text-white p-5 rounded-2xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 border-l-4 border-mkpRed">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-mkpRed rounded-xl flex items-center justify-center text-white">
+                                <i class="fa-solid fa-phone-volume text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-slate-400 block">Direct Hotline Numbers</span>
+                                <div class="text-sm sm:text-base font-extrabold tracking-wide">
+                                    <a href="tel:09303076342" class="hover:text-red-400 transition">0930 307 6342</a> / 
+                                    <a href="tel:09075478946" class="hover:text-red-400 transition">0907 547 8946</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#contact" class="bg-mkpRed hover:bg-red-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition shadow-md w-full sm:w-auto text-center">
+                            Book Now
+                        </a>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 justify-center lg:justify-start pt-2">
+                        <a href="#services" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-6 py-3 rounded-xl transition shadow">
+                            Explore Our Services
+                        </a>
+                        <a href="#contact" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-6 py-3 rounded-xl transition">
+                            Instant Booking
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <span class="text-mkpRed uppercase font-bold text-xs tracking-widest bg-red-50 px-3 py-1 rounded-full">About Us</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">MKP TRUCKING SERVICE</h2>
+                <div class="w-20 h-1.5 bg-mkpRed mx-auto rounded-full"></div>
+                <p class="text-slate-600 text-base">
+                    A forward-looking transportation and logistics service provider dedicated to delivering reliable, efficient, and convenient trucking and moving solutions to meet the business and personal needs of individuals, families, businesses, and commercial establishments.
+                </p>
+            </div>
+
+            <!-- Mission & Vision Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                <!-- Vision -->
+                <div class="bg-slate-50 border border-slate-100 p-8 rounded-3xl shadow-sm hover:shadow-md transition space-y-4">
+                    <div class="w-14 h-14 bg-red-100 text-mkpRed rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900">Our Vision</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        To become a trusted and preferred trucking and logistics service provider, recognized for dependable transportation solutions, professional customer service, and a commitment to helping individuals and businesses move their belongings and goods efficiently and securely.
+                    </p>
+                </div>
+                <!-- Mission -->
+                <div class="bg-slate-50 border border-slate-100 p-8 rounded-3xl shadow-sm hover:shadow-md transition space-y-4">
+                    <div class="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900">Our Mission</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        To provide accessible, reliable, and customer-focused trucking services that make residential relocation, commercial moving, and goods transportation more convenient and efficient.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Hydraulic Lifters Highlight -->
+            <div class="bg-gradient-to-r from-slate-900 via-red-950 to-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-xl flex flex-col lg:flex-row items-center justify-between gap-8 border border-red-900/40">
+                <div class="space-y-4 max-w-2xl">
+                    <div class="inline-flex items-center space-x-2 bg-mkpRed text-white text-xs font-semibold px-3 py-1 rounded-full">
+                        <i class="fa-solid fa-bolt"></i> Special Equipment
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold">Equipped with Hydraulic Lifters for Secure Cargo Handling</h3>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        We take pride in pioneering simple, complete, and specialized moving services through the use of our trucks equipped with hydraulic lifters, designed to make loading, unloading, and transporting goods more efficient, convenient, and secure.
+                    </p>
+                </div>
+                <div class="w-full lg:w-auto flex flex-col sm:flex-row gap-4">
+                    <div class="bg-white/10 p-6 rounded-2xl text-center border border-white/10 backdrop-blur-sm">
+                        <i class="fa-solid fa-truck-ramp-box text-4xl text-red-500 mb-2"></i>
+                        <h4 class="font-bold text-lg">Hydraulic Lift</h4>
+                        <p class="text-xs text-slate-300">Heavy Lifting Made Easy</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <span class="text-mkpRed uppercase font-bold text-xs tracking-widest bg-red-100 px-3 py-1 rounded-full">Our Services</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Comprehensive Trucking & Relocation Solutions</h2>
+                <div class="w-20 h-1.5 bg-mkpRed mx-auto rounded-full"></div>
+                <p class="text-slate-600">
+                    Whether transferring household belongings to a new residence, relocating an entire office, or transporting essential business supplies, we provide tailored transport solutions.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Service 1 -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition group border border-slate-200/60 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 bg-red-100 text-mkpRed rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed group-hover:text-white transition">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Equipment</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Dependable transportation for businesses, retailers, suppliers, and commercial clients requiring general goods and merchandise delivery.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-slate-100">
+                        <button type="button" onclick="openServiceInfo('Goods Delivery')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
+                            <span>View Details &amp; Book</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition group border border-slate-200/60 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed transition">
+                            <i class="fa-solid fa-truck-medical"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Medical Equipment</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Specialized transport support for clinics, hospitals, pharmacies, and distributors of appropriately packaged, non-hazardous medical items.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-slate-100">
+                        <button type="button" onclick="openServiceInfo('Medical Supplies')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
+                            <span>View Details &amp; Book</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition group border border-slate-200/60 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 bg-red-100 text-mkpRed rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed group-hover:text-white transition">
+                            <i class="fa-solid fa-warehouse"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Warehouse Transfer Services</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Organized inventory and equipment relocation from one facility to another to minimize operational disruption.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-slate-100">
+                        <button type="button" onclick="openServiceInfo('Warehouse Transfer')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
+                            <span>View Details &amp; Book</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition group border border-slate-200/60 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed transition">
+                            <i class="fa-solid fa-tower-broadcast"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Telco Equipment Transport</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Supporting telecommunications companies, contractors, and suppliers with secure transport of technical supplies and infrastructure items.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-slate-100">
+                        <button type="button" onclick="openServiceInfo('Telco Equipment')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
+                            <span>View Details &amp; Book</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition group border border-slate-200/60 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed transition">
+                            <i class="fa-solid fa-hard-hat"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Business Client Services</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Reliable logistics support for construction suppliers and contractors moving building materials to project locations.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-slate-100">
+                        <button type="button" onclick="openMessenger()" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
+                            <span>For Business Clients</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition group border border-slate-200/60 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 bg-red-100 text-mkpRed rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed group-hover:text-white transition">
+                            <i class="fa-solid fa-building-user"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Office Relocation</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Assisting companies in moving office furniture, workstations, filing cabinets, and boxed documents to new premises smoothly.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-slate-100">
+                        <button type="button" onclick="openServiceInfo('Office Relocation')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
+                            <span>View Details &amp; Book</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 7 -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition group border border-slate-200/60 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed transition">
+                            <i class="fa-solid fa-city"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">Condominium Relocation</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Coordinated moving solutions adhering strictly to building regulations, elevator schedules, and property management rules.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-slate-100">
+                        <button type="button" onclick="openServiceInfo('Condo Relocation')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
+                            <span>View Details &amp; Book</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 8 -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition group border border-slate-200/60 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 bg-red-100 text-mkpRed rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed group-hover:text-white transition">
+                            <i class="fa-solid fa-house-chimney"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900">House Moving / Lipat-Bahay</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Making family residential relocations stress-free and convenient for personal belongings, furniture, and appliances.
+                        </p>
+                    </div>
+                    <div class="pt-6 mt-6 border-t border-slate-100">
+                        <button type="button" onclick="openServiceInfo('House Moving')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
+                            <span>View Details &amp; Book</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Features Section (Customer Portal, Driver App, Admin Dashboard with non-scrolling animated tab switcher) -->
+    
+
+    <!-- Why Choose Us Section -->
+    <section id="why-us" class="py-20 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <span class="text-mkpRed uppercase font-bold text-xs tracking-widest bg-red-500/20 px-3 py-1 rounded-full">Why Choose Us</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">The MKP Advantage</h2>
+                <div class="w-20 h-1.5 bg-mkpRed mx-auto rounded-full"></div>
+                <p class="text-slate-300">
+                    We value customer satisfaction, professionalism, safety, and responsible cargo handling in every single journey.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-slate-800/80 border border-slate-700 p-8 rounded-3xl space-y-4 hover:border-mkpRed transition">
+                    <div class="w-14 h-14 bg-red-500/20 text-mkpRed rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-truck-field"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Versatile Trucking Solutions</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Catering to household relocation, commercial transfers, general goods deliveries, and specialized industry supplies.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-slate-800/80 border border-slate-700 p-8 rounded-3xl space-y-4 hover:border-mkpRed transition">
+                    <div class="w-14 h-14 bg-red-500/20 text-mkpRed rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-shield-heart"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Safe & Responsible Handling</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Recognizing the importance of proper cargo preparation, loading coordination, and careful transportation with hydraulic lifters.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-slate-800/80 border border-slate-700 p-8 rounded-3xl space-y-4 hover:border-mkpRed transition">
+                    <div class="w-14 h-14 bg-red-500/20 text-mkpRed rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Convenient Arrangements</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Straightforward service coordination based on pickup locations, destinations, cargo specifications, and preferred schedules.
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-slate-800/80 border border-slate-700 p-8 rounded-3xl space-y-4 hover:border-mkpRed transition">
+                    <div class="w-14 h-14 bg-red-500/20 text-mkpRed rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Flexible Service Applications</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Supporting one-time relocations, individual deliveries, and arranged business transportation requirements.
+                    </p>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="bg-slate-800/80 border border-slate-700 p-8 rounded-3xl space-y-4 hover:border-mkpRed transition">
+                    <div class="w-14 h-14 bg-red-500/20 text-mkpRed rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-face-smile"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Customer-Centered Approach</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Valuing every service inquiry and addressing transportation needs with utmost professionalism and care.
+                    </p>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="bg-slate-800/80 border border-slate-700 p-8 rounded-3xl space-y-4 hover:border-mkpRed transition">
+                    <div class="w-14 h-14 bg-red-500/20 text-mkpRed rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Support For Business Operations</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Helping businesses move merchandise, equipment, inventory, and supplies seamlessly between operational locations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Feedback Section -->
+    <section id="feedback" class="py-20 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12 space-y-4">
+                <span class="text-mkpRed uppercase font-bold text-xs tracking-widest bg-red-100 px-3 py-1 rounded-full">Customer Feedback</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">What Our Clients Say</h2>
+                <div class="w-20 h-1.5 bg-mkpRed mx-auto rounded-full"></div>
+                <p class="text-slate-600">Feedback from clients who trusted MKP Transport Movers with their homes, offices, and equipment.</p>
+            </div>
+            <div id="feedbackGrid" class="columns-1 sm:columns-2 lg:columns-3 gap-5">
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Rhitzy Oliver" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-rhitzy-oliver.jpg" alt="Feedback from Rhitzy Oliver" loading="lazy" class="w-full h-auto block">
+                    </button>
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Shiella" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-shiella.jpg" alt="Feedback from Shiella" loading="lazy" class="w-full h-auto block">
+                    </button>
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Carlo" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-carlo.jpg" alt="Feedback from Carlo" loading="lazy" class="w-full h-auto block">
+                    </button>
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Sydney Villalongja" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-sydney-villalongja.jpg" alt="Feedback from Sydney Villalongja" loading="lazy" class="w-full h-auto block">
+                    </button>
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Rumil Bonifacio" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-rumil-bonifacio.jpg" alt="Feedback from Rumil Bonifacio" loading="lazy" class="w-full h-auto block">
+                    </button>
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Pacholo Mendoza Loor" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-pacholo-loor.jpg" alt="Feedback from Pacholo Mendoza Loor" loading="lazy" class="w-full h-auto block">
+                    </button>
+            </div>
+            <p class="text-center text-xs text-slate-400 mt-4">Tap a feedback to enlarge.</p>
+            <template id="feedbackOnHold">
+                <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Pj Ortega" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-pj-ortega.jpg" alt="Feedback from Pj Ortega" loading="lazy" class="w-full h-auto block">
+                    </button>
+                <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Faye Janelle Guevara Valdes" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-faye-valdes.jpg" alt="Feedback from Faye Janelle Guevara Valdes" loading="lazy" class="w-full h-auto block">
+                    </button>
+            </template>
+        </div>
+    </section>
+
+    <!-- Booking Portal & Contact Us Section -->
+    <section id="contact" class="py-20 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <span class="text-mkpRed uppercase font-bold text-xs tracking-widest bg-red-100 px-3 py-1 rounded-full">Contact & Booking</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Get in Touch or Book a Truck</h2>
+                <div class="w-20 h-1.5 bg-mkpRed mx-auto rounded-full"></div>
+                <p class="text-slate-600">
+                    Fill out the booking form below or visit our main office and garage locations in Cainta and Taytay, Rizal.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <!-- Contact & Office Info -->
+                <div class="lg:col-span-5 space-y-6">
+                    <!-- Office Address Card -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-red-100 text-mkpRed rounded-2xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-building"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-lg">Office Address</h4>
+                                <p class="text-xs text-slate-500">Main Headquarters</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed pl-3 border-l-2 border-mkpRed">
+                            492 BKL17 Kabisig San Andress Cainta Rizal 1900
+                        </p>
+                    </div>
+
+                    <!-- Garage Address Card -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-warehouse"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-lg">Garage Address</h4>
+                                <p class="text-xs text-slate-500">Fleet Parking Base</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed pl-3 border-l-2 border-slate-900">
+                            No.018 Sampaguita St. Highway 2000 Taytay Rizal
+                        </p>
+                    </div>
+
+                    <!-- Contact Numbers Card -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-phone-volume"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-lg">Direct Hotlines</h4>
+                                <p class="text-xs text-slate-500">Call or Text Anytime</p>
+                            </div>
+                        </div>
+                        <div class="pl-3 border-l-2 border-emerald-500 space-y-1">
+                            <a href="tel:09303076342" class="block font-bold text-slate-800 hover:text-mkpRed transition text-base">0930 307 6342</a>
+                            <a href="tel:09075478946" class="block font-bold text-slate-800 hover:text-mkpRed transition text-base">0907 547 8946</a>
+                        </div>
+                    </div>
+
+                    <!-- Partners Card (para magdagdag: kopyahin ang isang logo box at palitan ang src at alt) -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 space-y-5">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-red-100 text-mkpRed rounded-2xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-handshake"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-lg">Our Partners</h4>
+                                <p class="text-xs text-slate-500">Our trusted regular business clients</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-white">
+                                <img src="images/partner-van-husen.jpg" alt="Van Husen Trading Company" loading="lazy" class="w-full aspect-square object-cover">
+                            </div>
+                            <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-white">
+                                <img src="images/partner-chosen-easy-vendo.jpg" alt="Chosen Easy Vendo" loading="lazy" class="w-full aspect-square object-cover">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Booking / Contact Form -->
+                <div class="lg:col-span-7">
+                    <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-6 flex items-center space-x-2">
+                            <i class="fa-solid fa-file-invoice-dollar text-mkpRed"></i>
+                            <span>Instant Booking Request Form</span>
+                        </h3>
+                        <form id="bookingForm" onsubmit="goToReview(event)" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Service / Cargo Type</label>
+                                    <select id="serviceType" required onchange="gateBooking()" class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none">
+                                        <option value="" selected disabled>Select a service type</option>
+                                        <option value="House Moving">House Moving</option>
+                                        <option value="Office Relocation">Office Relocation</option>
+                                        <option value="Condo Relocation">Condominium Relocation</option>
+                                        <option value="Goods Delivery">Equipment</option>
+                                        <option value="Medical Supplies">Medical Equipment</option>
+                                        <option value="Warehouse Transfer">Warehouse Transfer</option>
+                                        <option value="Telco Equipment">Telco Equipment Transport</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Truck Choice</label>
+                                    <select id="truckChoice" class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none"><option>Loading...</option></select>
+                                    <div id="truckPreview" class="hidden mt-3 flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl p-2"></div>
+                                </div>
+                            </div>
+                            <p id="serviceGate" class="flex items-center gap-2 text-sm font-semibold text-mkpRed bg-red-50 border border-red-200 rounded-xl p-3"><i class="fa-solid fa-circle-exclamation"></i> Please select a service type to start your booking.</p>
+
+                            <fieldset id="bookingFields" disabled class="space-y-6 disabled:opacity-50 transition">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div><label class="block text-xs font-bold text-slate-700 uppercase mb-2">Client Name</label><input type="text" id="clientName" required class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none" placeholder="John Doe"></div>
+                                    <div><label class="block text-xs font-bold text-slate-700 uppercase mb-2">Phone Number</label><input type="tel" id="clientPhone" required class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none" placeholder="09123456789"></div>
+                                </div>
+                                <div><label class="block text-xs font-bold text-slate-700 uppercase mb-2">Email Address</label><input type="email" id="clientEmail" required class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none" placeholder="name@email.com"></div>
+
+                                <div class="flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-xl p-3"><i class="fa-solid fa-circle-info mt-0.5"></i><span>Please provide the <strong>exact pick-up and drop-off address</strong> (house/building number, street, barangay, city). You can also drop a pin on the map below.</span></div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div><label class="block text-xs font-bold text-slate-700 uppercase mb-2">Pickup Location</label><input type="text" id="pickupLoc" required class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none" placeholder="Exact pick-up address"></div>
+                                    <div><label class="block text-xs font-bold text-slate-700 uppercase mb-2">Drop-off Location</label><input type="text" id="dropoffLoc" required class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none" placeholder="Exact drop-off address"></div>
+                                </div>
+
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                                        <button type="button" id="pinBtn-pickup" onclick="setPinMode('pickup')" class="text-xs font-bold px-3 py-2 rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-location-dot text-green-600 mr-1"></i>Pin Pick-up on Map</button>
+                                        <button type="button" id="pinBtn-dropoff" onclick="setPinMode('dropoff')" class="text-xs font-bold px-3 py-2 rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-location-dot text-mkpRed mr-1"></i>Pin Drop-off on Map</button>
+                                        <span id="pinHint" class="text-xs font-semibold text-slate-600"></span>
+                                    </div>
+                                    <div id="bookingMap" class="isolate h-72 w-full rounded-2xl border border-slate-200 overflow-hidden"></div>
+                                    <p id="routeInfo" class="text-xs font-semibold text-slate-700 mt-2"></p>
+                                    <p class="text-[11px] text-slate-400">Live map: the route appears as you type. Click a pin button, then click the map to drop a pin. Drag a pin to adjust it.</p>
+                                </div>
+
+                                <div><label class="block text-xs font-bold text-slate-700 uppercase mb-2">Preferred Date of Pickup</label><input type="date" id="preferredDate" required class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none"></div>
+
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                                    <p class="text-sm font-bold text-slate-800 mb-3"><i class="fa-solid fa-circle-check text-green-600 mr-1"></i> Always included with your booking</p>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden"><img data-sample src="images/hand-trolley.jpg" alt="Hand trolley" class="w-full h-40 object-contain bg-white p-2"><p class="text-xs font-bold text-slate-800 p-2">Hand Trolley</p></div>
+                                        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden"><img data-sample src="images/push-cart.jpg" alt="Push cart" class="w-full h-40 object-contain bg-white p-2"><p class="text-xs font-bold text-slate-800 p-2">Push Cart</p></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Add-ons</label>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-start">
+                                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><label class="flex items-center gap-3 text-sm font-semibold text-slate-700 cursor-pointer"><input type="checkbox" id="addHelper" class="w-4 h-4 accent-red-600" onchange="toggleBox('helperQtyWrap',this.checked)"> Helper</label>
+                                            <div id="helperQtyWrap" class="hidden mt-3"><label class="text-[11px] font-bold text-slate-500 uppercase">Number of helpers</label><input type="number" id="helperCount" min="1" max="20" value="1" class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none mt-1"></div></div>
+                                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><label class="flex items-center gap-3 text-sm font-semibold text-slate-700 cursor-pointer"><input type="checkbox" id="addJack" class="w-4 h-4 accent-red-600" onchange="toggleBox('jackPicWrap',this.checked)"> Jack Pallet</label>
+                                            <div id="jackPicWrap" class="hidden mt-3"><img data-sample src="images/jack-pallet.jpg" alt="Jack pallet" class="w-full h-40 object-contain rounded-lg bg-white"><p class="text-[11px] text-slate-500 mt-1">Sample photo of a jack pallet.</p></div></div>
+                                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><label class="flex items-center gap-3 text-sm font-semibold text-slate-700 cursor-pointer"><input type="checkbox" id="addFloor" class="w-4 h-4 accent-red-600" onchange="toggleBox('floorQtyWrap',this.checked)"> Floor</label>
+                                            <div id="floorQtyWrap" class="hidden mt-3"><label class="text-[11px] font-bold text-slate-500 uppercase">How many floors?</label><input type="number" id="floorCount" min="1" max="100" value="1" class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none mt-1"></div></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Photos of Items to be Loaded <span class="normal-case font-normal text-slate-400">(optional, up to 20)</span></label>
+                                    <label class="flex items-center justify-center gap-2 border-2 border-dashed border-slate-300 rounded-xl p-4 text-sm text-slate-600 cursor-pointer hover:bg-slate-50"><i class="fa-solid fa-camera"></i> Add photos<input type="file" accept="image/*" multiple class="hidden" onchange="addItemPhotos(this)"></label>
+                                    <div id="itemPhotoPreview" class="flex flex-wrap gap-3 mt-3"></div>
+                                    <p id="itemPhotoCount" class="text-[11px] text-slate-400 mt-1">0/20 photos</p>
+                                </div>
+
+                                <div><label class="block text-xs font-bold text-slate-700 uppercase mb-2">Additional Notes or Requirements</label><textarea rows="3" id="clientNotes" class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none" placeholder="List major furniture, items, or special instructions..."></textarea></div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Mode of Payment <span class="text-mkpRed">*</span></label>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <label class="cursor-pointer block">
+                                        <input type="radio" name="paymentMode" value="COD" class="peer sr-only" required>
+                                        <div class="h-full border-2 border-slate-200 rounded-xl p-3 bg-slate-50 hover:border-slate-300 peer-checked:border-mkpRed peer-checked:bg-red-50 peer-focus-visible:ring-2 peer-focus-visible:ring-mkpRed transition text-center">
+                                            <div class="h-16 flex items-center justify-center gap-2"><img src="images/payment-cod.jpg" alt="Cash on Delivery" class="max-h-16 w-auto max-w-full object-contain" onerror="this.style.display='none'"></div>
+                                            <p class="text-xs font-bold text-slate-800 mt-2">COD</p>
+                                            <p class="text-[11px] text-slate-500">Cash on Delivery</p>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer block">
+                                        <input type="radio" name="paymentMode" value="Bank Transfer" class="peer sr-only" required>
+                                        <div class="h-full border-2 border-slate-200 rounded-xl p-3 bg-slate-50 hover:border-slate-300 peer-checked:border-mkpRed peer-checked:bg-red-50 peer-focus-visible:ring-2 peer-focus-visible:ring-mkpRed transition text-center">
+                                            <div class="h-16 flex items-center justify-center gap-2"><img src="images/payment-bank-transfer.png" alt="Bank Transfer" class="max-h-16 w-auto max-w-[45%] object-contain rounded" onerror="this.style.display='none'"><img src="images/payment-maribank.jpg" alt="MariBank" class="max-h-16 w-auto max-w-[45%] object-contain rounded" onerror="this.style.display='none'"></div>
+                                            <p class="text-xs font-bold text-slate-800 mt-2">Bank Transfer</p>
+                                            <p class="text-[11px] text-slate-500">MariBank</p>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer block">
+                                        <input type="radio" name="paymentMode" value="E-Wallet" class="peer sr-only" required>
+                                        <div class="h-full border-2 border-slate-200 rounded-xl p-3 bg-slate-50 hover:border-slate-300 peer-checked:border-mkpRed peer-checked:bg-red-50 peer-focus-visible:ring-2 peer-focus-visible:ring-mkpRed transition text-center">
+                                            <div class="h-16 flex items-center justify-center gap-2"><img src="images/payment-gcash.png" alt="GCash" class="max-h-16 w-auto max-w-[45%] object-contain rounded" onerror="this.style.display='none'"><img src="images/payment-maya.png" alt="Maya" class="max-h-16 w-auto max-w-[45%] object-contain rounded" onerror="this.style.display='none'"></div>
+                                            <p class="text-xs font-bold text-slate-800 mt-2">E-Wallet</p>
+                                            <p class="text-[11px] text-slate-500">GCash or Maya</p>
+                                        </div>
+                                    </label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" id="bookingNextBtn" class="w-full bg-mkpRed hover:bg-red-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-red-500/20 transition flex items-center justify-center space-x-2 text-base"><span>Next: Review Booking</span><i class="fa-solid fa-arrow-right"></i></button>
+                            </fieldset>
+                        </form>
+                        <div id="bookingReview" class="hidden space-y-5">
+                            <p class="text-sm text-slate-500">Review your booking before sending it to us.</p>
+                            <div id="reviewRows" class="divide-y divide-slate-100 border border-slate-200 rounded-2xl overflow-hidden"></div>
+                            <label class="flex items-start gap-3 text-sm text-slate-700 cursor-pointer"><input type="checkbox" id="confirmDetails" class="w-4 h-4 mt-0.5 accent-red-600" onchange="document.getElementById('bookingSubmitBtn').disabled=!this.checked"> <span>I confirm that all the details above are correct.</span></label>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <button type="button" onclick="showBookingForm()" class="sm:w-40 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-4 rounded-2xl transition"><i class="fa-solid fa-arrow-left mr-2"></i>Edit</button>
+                                <button type="button" id="bookingSubmitBtn" onclick="handleBookingSubmit()" disabled class="flex-1 bg-mkpRed hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-4 rounded-2xl shadow-xl shadow-red-500/20 transition flex items-center justify-center space-x-2 text-base"><i class="fa-solid fa-paper-plane"></i><span>Submit Booking Request</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-white py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div class="space-y-4 md:col-span-2">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-mkpRed rounded-xl flex items-center justify-center text-white font-bold">
+                        <i class="fa-solid fa-truck-moving"></i>
+                    </div>
+                    <span class="text-lg font-extrabold tracking-tight">MKP TRUCKING SERVICE</span>
+                </div>
+                <p class="text-xs text-slate-400 max-w-sm leading-relaxed">
+                    Moving with Purpose. Delivering with Commitment. Reliable transportation, safe handling, and seamless delivery for all your residential and commercial needs.
+                </p>
+                <div class="flex space-x-3 pt-2">
+                    <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-mkpRed rounded-full flex items-center justify-center text-white transition"><i class="fa-brands fa-facebook-f text-xs"></i></a>
+                    <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-mkpRed rounded-full flex items-center justify-center text-white transition"><i class="fa-brands fa-instagram text-xs"></i></a>
+                    <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-mkpRed rounded-full flex items-center justify-center text-white transition"><i class="fa-brands fa-twitter text-xs"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold text-sm text-red-500 uppercase tracking-widest mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-xs text-slate-400">
+                    <li><a href="#home" class="hover:text-white transition">Home</a></li>
+                    <li><a href="#about" class="hover:text-white transition">About Us</a></li>
+                    <li><a href="#services" class="hover:text-white transition">Services</a></li>
+                    <li><a href="#contact" class="hover:text-white transition">Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-sm text-red-500 uppercase tracking-widest mb-4">Our Offices</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-2">
+                    <strong class="text-white block">Main Office:</strong> 492 BKL17 Kabisig San Andress Cainta Rizal
+                </p>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    <strong class="text-white block">Garage:</strong> No.018 Sampaguita St. Highway 2000 Taytay Rizal
+                </p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-slate-900 text-center text-xs text-slate-500">
+            &copy; 2026 MKP Trucking Service. All rights reserved. Designed for reliable logistics and professional transport.
+        </div>
+    </footer>
+
+    <!-- ===================== ADMIN LOGIN MODAL ===================== -->
+    <div id="admin-login-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[200] flex items-start justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full my-auto overflow-hidden">
+            <div class="bg-slate-900 px-6 py-5 flex items-center justify-between">
+                <h3 class="font-bold text-white flex items-center space-x-2"><i class="fa-solid fa-user-shield text-mkpRed"></i><span>Admin Login</span></h3>
+                <button onclick="closeAdminLogin()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleAdminLogin(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Email</label>
+                    <input type="email" id="admin-login-username" required autocomplete="username" class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none" placeholder="admin email">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Password</label>
+                    <input type="password" id="admin-login-pin" required autocomplete="current-password" class="w-full text-sm border border-slate-300 rounded-xl p-3.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none" placeholder="••••••">
+                </div>
+                <p id="admin-login-error" class="hidden text-xs text-rose-600 font-semibold"></p>
+                <button type="submit" id="admin-login-btn" class="w-full bg-mkpRed hover:bg-red-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-right-to-bracket"></i><span>Mag-login</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===================== ADMIN DASHBOARD (full-screen overlay) ===================== -->
+    <div id="admin-dashboard" class="hidden fixed inset-0 z-[150] bg-slate-100 flex-col">
+        <header class="bg-slate-950 text-white border-b border-slate-800">
+            <div class="max-w-[1600px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 shrink-0">
+                    <div class="w-9 h-9 bg-mkpRed rounded-lg flex items-center justify-center"><i class="fa-solid fa-truck-moving"></i></div>
+                    <span class="font-extrabold hidden sm:inline">MKP <span class="text-mkpRed">ADMIN</span></span>
+                </div>
+                <nav class="flex items-center gap-1 overflow-x-auto flex-1 min-w-0" style="scrollbar-width:none;">
+                    <button onclick="switchAdminTab('dashboard')" id="admin-nav-dashboard" class="shrink-0 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap cursor-pointer"><i class="fa-solid fa-gauge-high mr-1"></i>Dashboard</button>
+                    <button onclick="switchAdminTab('bookings')" id="admin-nav-bookings" class="shrink-0 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap cursor-pointer"><i class="fa-solid fa-truck-fast mr-1"></i>Bookings</button>
+                    <button onclick="switchAdminTab('calendar')" id="admin-nav-calendar" class="shrink-0 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap cursor-pointer"><i class="fa-solid fa-calendar-days mr-1"></i>Calendar</button>
+                    <button onclick="switchAdminTab('analytics')" id="admin-nav-analytics" class="shrink-0 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap cursor-pointer"><i class="fa-solid fa-chart-line mr-1"></i>Sales Reports & Analytics</button>
+                    <button onclick="switchAdminTab('expenses')" id="admin-nav-expenses" class="shrink-0 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap cursor-pointer"><i class="fa-solid fa-sack-dollar mr-1"></i>Expenses</button>
+                    <button onclick="switchAdminTab('fleet')" id="admin-nav-fleet" class="shrink-0 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap cursor-pointer"><i class="fa-solid fa-truck-fast mr-1"></i> Fleet</button>
+                </nav>
+                <div class="flex items-center gap-2 shrink-0">
+                    <span id="admin-whoami" class="text-xs text-slate-400 hidden sm:inline"></span>
+                    <button onclick="openAdminSettingsModal()" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg cursor-pointer" title="Settings"><i class="fa-solid fa-gear"></i></button>
+                    <button onclick="adminLogout()" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg cursor-pointer" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+                    <button onclick="closeAdminDashboard()" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg cursor-pointer" title="Bumalik sa Public Site"><i class="fa-solid fa-house"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto">
+            <!-- ===== DASHBOARD TAB ===== -->
+            <div id="admin-view-fleet" class="hidden p-4 sm:p-6 max-w-[1600px] mx-auto space-y-4">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <div><h2 class="text-lg font-extrabold text-slate-900">Fleet Trucks &amp; Driver Assignment Manager</h2><p class="text-xs text-slate-500">Palitan ang availability ng truck at ang assigned driver.</p></div>
+                    <button onclick="openFleetForm()" class="bg-mkpRed hover:bg-red-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl"><i class="fa-solid fa-plus mr-1"></i>Add New Truck Unit</button>
+                </div>
+                <form id="fleetForm" onsubmit="saveFleet(event)" class="hidden bg-white border border-slate-200 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+                    <input type="hidden" id="fl-id">
+                    <div><label class="text-[11px] font-bold uppercase text-slate-500">Unit ID</label><input id="fl-unit" required class="w-full text-sm border border-slate-300 rounded-xl p-2.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none"></div>
+                    <div><label class="text-[11px] font-bold uppercase text-slate-500">Truck Model / Type</label><input id="fl-model" required list="fleetModels" class="w-full text-sm border border-slate-300 rounded-xl p-2.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none"><datalist id="fleetModels"></datalist></div>
+                    <div><label class="text-[11px] font-bold uppercase text-slate-500">Assigned Driver</label><input id="fl-driver" required class="w-full text-sm border border-slate-300 rounded-xl p-2.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none"></div>
+                    <div><label class="text-[11px] font-bold uppercase text-slate-500">Location / Base</label><input id="fl-loc" required class="w-full text-sm border border-slate-300 rounded-xl p-2.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none"></div>
+                    <div class="flex gap-2"><select id="fl-status" class="w-full text-sm border border-slate-300 rounded-xl p-2.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none"><option>Available</option><option>On-Trip</option><option>Maintenance</option></select><button class="bg-slate-900 text-white text-xs font-bold px-4 rounded-xl">Save</button></div>
+                </form>
+                <div id="fleetGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            </div>
+            <div id="admin-view-dashboard" class="hidden p-4 sm:p-6 max-w-[1600px] mx-auto space-y-6">
+                <div id="admin-dash-cards" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3"></div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+                        <h3 class="font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-route text-mkpOrange"></i> Ongoing Bookings</h3>
+                        <span id="admin-dash-ongoing-count" class="text-xs text-slate-500">0 found</span>
+                    </div>
+                    <div id="admin-dash-ongoing-list" class="divide-y divide-slate-100"></div>
+                </div>
+            </div>
+
+            <!-- ===== BOOKINGS TAB ===== -->
+            <div id="admin-view-bookings" class="hidden p-4 sm:p-6 max-w-[1600px] mx-auto space-y-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex flex-wrap gap-3 items-center">
+                    <input type="text" id="bk-search" oninput="renderBookingsTable()" placeholder="Maghanap ng pangalan o numero..." class="flex-1 min-w-[200px] text-sm border border-slate-300 rounded-xl p-2.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none">
+                    <select id="bk-status-filter" onchange="renderBookingsTable()" class="text-sm border border-slate-300 rounded-xl p-2.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none">
+                        <option value="">Lahat ng Status</option>
+                        <option>Pending</option><option>Confirmed</option><option>Dispatched</option><option>In-Transit</option><option>Completed</option><option>Cancelled</option>
+                    </select>
+                    <button onclick="refreshBookings()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl cursor-pointer"><i class="fa-solid fa-rotate"></i> I-refresh</button>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs sm:text-sm border-collapse">
+                            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+                                <tr>
+                                    <th class="p-3">Booking</th>
+                                    <th class="p-3">Client</th>
+                                    <th class="p-3">Ruta</th>
+                                    <th class="p-3">Service / Truck</th>
+                                    <th class="p-3">Petsa</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3 text-right">Presyo (₱)</th>
+                                    <th class="p-3 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bk-table-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== CALENDAR TAB ===== -->
+            <div id="admin-view-calendar" class="hidden p-4 sm:p-6 max-w-[1600px] mx-auto space-y-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex items-center justify-between">
+                    <button onclick="changeCalendarMonth(-1)" class="p-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer"><i class="fa-solid fa-chevron-left"></i></button>
+                    <h3 id="cal-month-label" class="font-extrabold text-slate-900 text-lg"></h3>
+                    <button onclick="changeCalendarMonth(1)" class="p-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-3 sm:p-4">
+                    <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center text-[10px] sm:text-xs font-bold text-slate-400 mb-2">
+                        <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+                    </div>
+                    <div id="cal-grid" class="grid grid-cols-7 gap-1 sm:gap-2"></div>
+                </div>
+                <div id="cal-day-detail" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+                        <h3 id="cal-day-title" class="font-bold text-slate-900"></h3>
+                        <div class="flex items-center gap-3"><a id="cal-day-dl" class="hidden bg-mkpRed hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-lg cursor-pointer"><i class="fa-solid fa-download mr-1"></i>Download Image</a><button onclick="document.getElementById('cal-day-detail').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 cursor-pointer"><i class="fa-solid fa-xmark"></i></button></div>
+                    </div>
+                    <div id="cal-day-list" class="divide-y divide-slate-100"></div>
+                </div>
+            </div>
+
+            <!-- ===== SALES REPORTS & ANALYTICS TAB ===== -->
+            <div id="admin-view-analytics" class="hidden p-4 sm:p-6 max-w-[1600px] mx-auto space-y-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-semibold text-slate-600"><i class="fa-solid fa-calendar-days text-mkpRed"></i> Date Range:</span>
+                    <input type="date" id="an-start-date" onchange="applyAnalyticsFilter()" class="text-xs border border-slate-300 rounded-lg p-2 bg-slate-50">
+                    <span class="text-slate-400 text-xs">to</span>
+                    <input type="date" id="an-end-date" onchange="applyAnalyticsFilter()" class="text-xs border border-slate-300 rounded-lg p-2 bg-slate-50">
+                    <button onclick="setAnalyticsQuickFilter('today')" class="bg-slate-100 hover:bg-slate-200 text-xs font-semibold px-3 py-2 rounded-lg cursor-pointer">Today</button>
+                    <button onclick="setAnalyticsQuickFilter('week')" class="bg-slate-100 hover:bg-slate-200 text-xs font-semibold px-3 py-2 rounded-lg cursor-pointer">This Week</button>
+                    <button onclick="setAnalyticsQuickFilter('month')" class="bg-slate-100 hover:bg-slate-200 text-xs font-semibold px-3 py-2 rounded-lg cursor-pointer">This Month</button>
+                    <button onclick="setAnalyticsQuickFilter('all')" class="bg-slate-900 text-white text-xs font-semibold px-3 py-2 rounded-lg cursor-pointer">Show All</button>
+                </div>
+                <div id="an-cards" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+                        <h4 class="font-bold text-slate-800 text-sm mb-3">Revenue Trend</h4>
+                        <canvas id="chart-revenue" height="200"></canvas>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+                        <h4 class="font-bold text-slate-800 text-sm mb-3">Bookings by Status</h4>
+                        <canvas id="chart-status" height="200"></canvas>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+                        <h4 class="font-bold text-slate-800 text-sm mb-3">Bookings by Service Type</h4>
+                        <canvas id="chart-service" height="200"></canvas>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+                        <h4 class="font-bold text-slate-800 text-sm mb-3">Bookings by Truck Type</h4>
+                        <canvas id="chart-truck" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== EXPENSES TAB ===== -->
+            <div id="admin-view-expenses" class="hidden p-4 sm:p-6 max-w-[1600px] mx-auto space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs font-semibold text-slate-600"><i class="fa-solid fa-calendar-days text-mkpRed"></i> Period:</span>
+                        <button id="exp-period-day" onclick="setExpensePeriod('day')" class="text-xs font-semibold px-3 py-2 rounded-lg cursor-pointer">Today</button>
+                        <button id="exp-period-week" onclick="setExpensePeriod('week')" class="text-xs font-semibold px-3 py-2 rounded-lg cursor-pointer">This Week</button>
+                        <button id="exp-period-month" onclick="setExpensePeriod('month')" class="text-xs font-semibold px-3 py-2 rounded-lg cursor-pointer">This Month</button>
+                        <button id="exp-period-all" onclick="setExpensePeriod('all')" class="text-xs font-semibold px-3 py-2 rounded-lg cursor-pointer">Show All</button>
+                    </div>
+                    <button onclick="openAddExpenseModal()" class="bg-mkpRed hover:bg-red-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl cursor-pointer"><i class="fa-solid fa-plus"></i> Magdagdag ng Gastos</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="bg-rose-50 border border-rose-100 rounded-2xl p-4">
+                        <p class="text-[10px] font-bold text-rose-500 uppercase">Total Gastos sa Period</p>
+                        <p id="exp-total" class="text-2xl font-bold text-rose-700">₱0.00</p>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4">
+                        <p class="text-[10px] font-bold text-emerald-600 uppercase">Net Income (Revenue - Gastos)</p>
+                        <p id="exp-net" class="text-2xl font-bold text-emerald-700">₱0.00</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs sm:text-sm border-collapse">
+                            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+                                <tr><th class="p-3">Petsa</th><th class="p-3">Kategorya</th><th class="p-3">Deskripsyon</th><th class="p-3 text-right">Halaga</th><th class="p-3">Tala Ni</th><th class="p-3 text-right">Action</th></tr>
+                            </thead>
+                            <tbody id="exp-table-body" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ADD EXPENSE MODAL -->
+    <div id="add-expense-modal" class="hidden fixed inset-0 bg-slate-950/70 z-[250] flex items-start justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full my-auto overflow-hidden">
+            <div class="bg-slate-900 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-bold text-white">Magdagdag ng Gastos</h3>
+                <button onclick="document.getElementById('add-expense-modal').classList.add('hidden')" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="submitAddExpense(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Kategorya</label>
+                    <select id="new-exp-category" class="w-full text-sm border border-slate-300 rounded-xl p-3 bg-slate-50">
+                        <option>Gasolina / Diesel</option><option>Pagkukumpuni ng Truck</option><option>Toll Fees</option><option>Sahod ng Driver</option><option>Upa sa Garahe</option><option>Insurance</option><option>Iba pa</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Deskripsyon</label>
+                    <input type="text" id="new-exp-desc" class="w-full text-sm border border-slate-300 rounded-xl p-3 bg-slate-50" placeholder="Hal. Fill-up para sa 10-wheeler">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Halaga (₱)</label>
+                        <input type="number" step="0.01" min="0.01" id="new-exp-amount" required class="w-full text-sm border border-slate-300 rounded-xl p-3 bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Petsa</label>
+                        <input type="date" id="new-exp-date" required class="w-full text-sm border border-slate-300 rounded-xl p-3 bg-slate-50">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-mkpRed hover:bg-red-700 text-white font-bold py-3 rounded-xl">I-save ang Gastos</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN SETTINGS MODAL (change PIN) -->
+    <div id="admin-settings-modal" class="hidden fixed inset-0 bg-slate-950/70 z-[250] flex items-start justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full my-auto overflow-hidden">
+            <div class="bg-slate-900 px-6 py-4 flex items-center justify-between">
+                <h3 class="font-bold text-white">Palitan ang PIN</h3>
+                <button onclick="document.getElementById('admin-settings-modal').classList.add('hidden')" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="submitChangePin(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Bagong PIN (hindi bababa sa 4 na karakter)</label>
+                    <input type="password" id="new-admin-pin" required minlength="4" class="w-full text-sm border border-slate-300 rounded-xl p-3 bg-slate-50">
+                </div>
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl">I-save</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Interactions -->
+    <!-- Service Terms & Conditions -->
+    <div id="svcModal" class="hidden fixed inset-0 z-[100] bg-slate-900/70 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto" onclick="if(event.target===this)closeServiceInfo()">
+        <div id="svcBox" class="bg-slate-100 rounded-3xl max-w-3xl mx-auto shadow-2xl overflow-hidden"></div>
+    </div>
+
+    <!-- Booking Details (Admin) -->
+    <div id="bookingModal" class="hidden fixed inset-0 z-[170] bg-slate-900/70 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto" onclick="if(event.target===this)closeBookingView()">
+        <div id="bvBox" class="bg-slate-100 rounded-3xl max-w-4xl mx-auto shadow-2xl overflow-hidden"></div>
+    </div>
+
+    <!-- Photo Viewer -->
+    <div id="lightbox" class="hidden fixed inset-0 z-[200] bg-black/95 flex flex-col">
+        <div class="flex items-center justify-between gap-4 px-4 h-14 text-white shrink-0">
+            <div class="min-w-0"><p id="lbCount" class="text-sm font-semibold truncate"></p><p class="text-[11px] text-slate-400">Click the photo to switch between fit-to-screen and actual size</p></div>
+            <button type="button" onclick="closeLightbox()" aria-label="Close" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 shrink-0"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="relative flex-1 min-h-0">
+            <div id="lbWrap" class="absolute inset-0 overflow-auto flex" onclick="if(event.target===this)closeLightbox()"><img id="lbImg" alt="" onclick="toggleLbZoom()"></div>
+            <button type="button" onclick="lbStep(-1)" aria-label="Previous photo" class="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-black/80 text-white"><i class="fa-solid fa-chevron-left"></i></button>
+            <button type="button" onclick="lbStep(1)" aria-label="Next photo" class="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-black/80 text-white"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <!-- Select Truck Modal -->
+    <div id="truckModal" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm p-3 sm:p-6 overflow-y-auto" onclick="if(event.target===this)closeTruckPicker()">
+        <div class="bg-slate-100 rounded-3xl max-w-6xl mx-auto shadow-2xl">
+            <div class="flex items-start justify-between gap-4 p-5 sm:p-6 border-b border-slate-200 sticky top-0 bg-slate-100 rounded-t-3xl z-10">
+                <div><h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Select Truck</h3><p class="text-sm text-slate-500">Service: <strong id="pickerService" class="text-mkpRed"></strong></p></div>
+                <button type="button" onclick="closeTruckPicker()" aria-label="Close" class="w-10 h-10 rounded-full bg-white hover:bg-slate-200 text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="truckGrid" class="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase (Firestore + Auth) ang backend. Ang module sa dulo ng page ang nagkokonekta.
+        window.fbReady = new Promise(r => { window.__fbResolve = r; });
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Toast Notification System
+        function showToast(title, msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 4000);
+        }
+
+        // Hindi puwedeng pumili ng petsa na nakaraan na
+        (function setMinPreferredDate() {
+            const el = document.getElementById('preferredDate');
+            if (el) el.min = new Date().toISOString().slice(0, 10);
+        })();
+
+        // ===================== TRUCK PICKER & 2-STEP BOOKING =====================
+        // Mga larawan: i-extract ang details.rar sa folder na "trucks" katabi ng HTML file na ito.
+        const TRUCKS = [
+ {
+  "id": "w4-closed",
+  "name": "4-Wheeler Closed Van 10 ft (Without Lifter)",
+  "dims": "10 x 5.5 x 5.6 ft (L x H x W)",
+  "folder": "4 WHEELER CLOSED VAN 10 Ft. (Without Lifter) 10  x 5.5 x 5.6 ft. (L x H x W)",
+  "images": [
+   "892005498_1675985530589103_687856258814318724_n.jpg",
+   "892835347_1105738082367377_9068018684557643970_n.jpg",
+   "893595123_1810557916761434_6174999515709272179_n (1).jpg"
+  ]
+ },
+ {
+  "id": "w6-closed-145",
+  "name": "6-Wheeler Closed Van w/ Automatic Lifter 14.5 ft",
+  "dims": "14.5 x 6.3 x 6.2 ft (L x H x W)",
+  "folder": "6 WHEELER CLOSED VAN WITH AUTOMATIC LIFTER - 14.5  x 6.3 x 6.2 ft. (L x H x W)",
+  "images": [
+   "866330136_1651045856574776_7444178383971322861_n.jpg",
+   "868346877_1414670927319765_2822054796906905585_n.jpg",
+   "870762057_3180075332188155_3121506898513448142_n.jpg"
+  ]
+ },
+ {
+  "id": "w6-closed-16",
+  "name": "6-Wheeler Closed Van w/ Automatic Lifter 16 ft",
+  "dims": "16 x 7.5 x 6.5 ft (L x H x W)",
+  "folder": "6 WHEELER CLOSED VAN WITH AUTOMATIC LIFTER - 16  x 7.5 x 6.5 ft. (L x H x W)",
+  "images": [
+   "ac1f7416-9db5-425a-80e5-d735c6557c73.png",
+   "MKP Transport Truck Branding Showcase.png"
+  ]
+ },
+ {
+  "id": "w6-wing",
+  "name": "6-Wheeler Forward Wing Van w/ Automatic Lifter",
+  "dims": "21 x 7.5 x 7.5 ft (L x H x W)",
+  "folder": "6 WHEELER FORWARD WING VAN WITH AUTOMATIC LIFTER - 21  x 7.5 x 7.5 ft. (L x H x W)",
+  "images": [
+   "890410515_1019524131017487_2103895596508697719_n.jpg",
+   "891926184_1387777120099943_1284473052503212571_n.jpg",
+   "893178974_1523603173150368_2556478387480779533_n.jpg"
+  ]
+ },
+ {
+  "id": "w10-wing",
+  "name": "10-Wheeler Forward Wing Van",
+  "dims": "32 x 8.9 x 8.5 ft (L x H x W)",
+  "folder": "10 WHEELER FORWARD WING VAN WITH  - 32  x 8.9 x 8.5 ft. (L x H x W)",
+  "images": [
+   "888057036_3036601763341950_8762325624463019673_n.jpg",
+   "890431899_2262048234727914_111054354743125723_n.jpg",
+   "890764222_1169867225706960_2598322516645626767_n.jpg"
+  ]
+ },
+ {
+  "id": "l300",
+  "name": "Mitsubishi L300",
+  "dims": "8 x 4 x 4 ft (L x H x W)",
+  "folder": "Mitsubishi L300 8  x 4 x 4 ft. (L x H x W)",
+  "images": [
+   "Branded Mitsubishi L300 on a Park Road.png",
+   "Mitsubishi L300 with MKP Transport Decal.png",
+   "mitsubishi-l300-exterior-headlights-5d8d7eb0edcdc.webp",
+   "mitsubishi-l300-exterior-rear-5d8d7eb64dbb2.webp",
+   "mitsubishi-l300-exterior-wheels-philippines-5d8d7eb2e34df.webp",
+   "mitsubishi-l300-interior-manual-5d8d7eb7ae4a4.webp",
+   "mitsubishi-l300-interior-rear-air-conditioning-5d8d7eba8534a.webp",
+   "mitsubishi-l300-interior-rear-cabin-5d8d7ebb96f59.webp"
+  ]
+ }
+];
+        const NOIMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="100%" height="100%" fill="#e2e8f0"/><text x="50%" y="50%" fill="#64748b" font-family="sans-serif" font-size="28" text-anchor="middle">MKP Truck Photo</text></svg>');
+        let pendingBooking = null, pickerService = '';
+        const $ = id => document.getElementById(id);
+        const imgUrl = (t, i) => { const f = t.images[i || 0]; return /^(data:|images\/)/.test(f) ? (f.startsWith('data:') ? f : encodeURI(f)) : encodeURI('trucks/' + t.folder + '/' + f); };
+        const imgTag = (t, i, cls, extra) => `<img src="${imgUrl(t, i)}" loading="lazy" onerror="this.onerror=null;this.src=NOIMG" class="${cls}" alt="${escapeHtml(t.name)}" ${extra || ''}>`;
+        const truckByName = n => TRUCKS.find(t => t.name === n);
+        const serviceLabel = v => { const o = [...$('serviceType').options].find(x => x.value === v); return o ? o.text : v; };
+
+        function fillTruckOptions() {
+            $('truckChoice').innerHTML = TRUCKS.map(t => `<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)}</option>`).join('');
+            updateTruckPreview();
+        }
+        function updateTruckPreview() {
+            const t = truckByName($('truckChoice').value), box = $('truckPreview');
+            if (!t) { box.classList.add('hidden'); return; }
+            box.classList.remove('hidden');
+            box.innerHTML = imgTag(t, 0, 'w-20 h-16 object-cover rounded-lg shrink-0 cursor-zoom-in', `onclick="openLightbox('${t.id}', 0)"`) + `<div><p class="text-sm font-bold text-slate-900">${escapeHtml(t.name)}</p><p class="text-xs text-slate-500">${escapeHtml(t.dims)}</p></div>`;
+        }
+        $('truckChoice').addEventListener('change', updateTruckPreview);
+
+        function openTruckPicker(service) {
+            pickerService = service;
+            $('pickerService').textContent = serviceLabel(service);
+            $('truckGrid').innerHTML = TRUCKS.map(t => `
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col">
+                    ${imgTag(t, 0, 'w-full h-48 object-cover bg-slate-200 cursor-zoom-in', `id="mi-${t.id}" data-i="0" onclick="openLightbox('${t.id}', +this.dataset.i)"`)}
+                    <div class="flex gap-1.5 p-2 overflow-x-auto">${t.images.map((_, i) => imgTag(t, i, 'w-14 h-10 object-cover rounded-md cursor-pointer border border-slate-200 shrink-0', `onclick="const m=$('mi-${t.id}');m.src=this.src;m.dataset.i=${i}"`)).join('')}</div>
+                    <div class="p-4 pt-2 flex-1 flex flex-col justify-between gap-3">
+                        <div><h4 class="font-bold text-slate-900 text-sm leading-snug">${escapeHtml(t.name)}</h4><p class="text-xs text-slate-500 mt-1">${escapeHtml(t.dims)}</p></div>
+                        <button type="button" onclick="chooseTruck('${t.id}')" class="w-full bg-mkpRed hover:bg-red-700 text-white text-sm font-bold py-2.5 rounded-xl transition">Select This Truck</button>
+                    </div>
+                </div>`).join('');
+            $('truckModal').classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+        function closeTruckPicker() { $('truckModal').classList.add('hidden'); document.body.classList.remove('overflow-hidden'); }
+        let lbT = null, lbI = 0;
+        function showLb() {
+            const im = $('lbImg');
+            im.classList.remove('lb-zoom');
+            im.onerror = () => { im.onerror = null; im.src = NOIMG; };
+            im.src = imgUrl(lbT, lbI);
+            $('lbCount').textContent = `${lbT.name} (${lbI + 1}/${lbT.images.length})`;
+            $('lbWrap').scrollTo(0, 0);
+        }
+        function openLightbox(id, i) { lbT = TRUCKS.find(x => x.id === id); lbI = i || 0; showLb(); $('lightbox').classList.remove('hidden'); document.body.classList.add('overflow-hidden'); }
+        function lbStep(d) { lbI = (lbI + d + lbT.images.length) % lbT.images.length; showLb(); }
+        function toggleLbZoom() { $('lbImg').classList.toggle('lb-zoom'); }
+        function closeLightbox() { $('lightbox').classList.add('hidden'); if ($('truckModal').classList.contains('hidden')) document.body.classList.remove('overflow-hidden'); }
+        document.addEventListener('keydown', e => {
+            const lb = !$('lightbox').classList.contains('hidden');
+            if (e.key === 'Escape') { lb ? closeLightbox() : closeTruckPicker(); }
+            else if (lb && e.key === 'ArrowRight') lbStep(1);
+            else if (lb && e.key === 'ArrowLeft') lbStep(-1);
+        });
+
+        function chooseTruck(id) {
+            const t = TRUCKS.find(x => x.id === id);
+            $('serviceType').value = pickerService; gateBooking();
+            $('truckChoice').value = t.name;
+            updateTruckPreview();
+            closeTruckPicker();
+            showBookingForm();
+            $('contact').scrollIntoView({ behavior: 'smooth' });
+            showToast('Truck Selected', t.name + ' - please fill out the booking form.');
+        }
+
+        function showBookingForm() {
+            setTimeout(() => bkMap && bkMap.invalidateSize(), 60);
+            $('bookingReview').classList.add('hidden');
+            $('bookingForm').classList.remove('hidden');
+        }
+
+        // Step 1 -> Step 2: review
+        function goToReview(event) {
+            event.preventDefault();
+            if (!$('serviceType').value) { showToast('Select a Service', 'Please select a service type first.'); return; }
+            const payPick = document.querySelector('input[name="paymentMode"]:checked');
+            if (!payPick) { showToast('Mode of Payment', 'Please choose COD, Bank Transfer, or E-Wallet.'); return; }
+            const helpers = $('addHelper').checked ? Math.max(1, parseInt($('helperCount').value, 10) || 1) : 0;
+            const floors = $('addFloor').checked ? Math.max(1, parseInt($('floorCount').value, 10) || 1) : 0;
+            pendingBooking = {
+                clientName: $('clientName').value.trim(), clientPhone: $('clientPhone').value.trim(), clientEmail: $('clientEmail').value.trim(),
+                pickupLoc: $('pickupLoc').value.trim(), dropoffLoc: $('dropoffLoc').value.trim(),
+                serviceType: $('serviceType').value, truckType: $('truckChoice').value, helpers, jackPallet: $('addJack').checked, floors,
+                itemPhotos: itemPhotos.slice(), pickupPin: pinStr('pickup'), dropoffPin: pinStr('dropoff'),
+                preferredDate: $('preferredDate').value, notes: $('clientNotes').value.trim(), paymentMode: payPick.value
+            };
+            const b = pendingBooking, t = truckByName(b.truckType);
+            const addons = [helpers ? helpers + ' helper' + (helpers > 1 ? 's' : '') : '', b.jackPallet ? 'Jack Pallet' : '', floors ? floors + ' floor' + (floors > 1 ? 's' : '') : ''].filter(Boolean).join(', ') || 'None';
+            const rows = [
+                ['Pick Up', b.pickupLoc], ['Drop Off', b.dropoffLoc], ['Name', b.clientName], ['Phone Number', b.clientPhone], ['Email', b.clientEmail],
+                ['Service / Cargo Type', serviceLabel(b.serviceType)],
+                ['Truck Choice', escapeHtml(b.truckType) + (t ? `<span class="block text-xs text-slate-500">${escapeHtml(t.dims)}</span>` : ''), true],
+                ['Always Included', 'Hand Trolley, Push Cart'], ['Add-ons', addons],
+                ['Map Pins', 'Pick-up: ' + (b.pickupPin ? 'set' : 'not set') + ' | Drop-off: ' + (b.dropoffPin ? 'set' : 'not set')],
+                ['Item Photos', b.itemPhotos.length ? '<span class="flex gap-2 flex-wrap">' + b.itemPhotos.map(p => `<img src="${p}" class="w-16 h-16 object-cover rounded-lg border border-slate-200" alt="">`).join('') + '</span>' : 'None', true],
+                ['Preferred Date', b.preferredDate], ['Mode of Payment', b.paymentMode], ['Notes', b.notes || '-']
+            ];
+            $('reviewRows').innerHTML = rows.map(([k, v, raw]) => `<div class="grid grid-cols-3 gap-3 p-3.5 text-sm"><span class="text-xs font-bold uppercase text-slate-500 pt-0.5">${k}</span><span class="col-span-2 font-medium text-slate-800 break-words whitespace-pre-line">${raw ? v : escapeHtml(v)}</span></div>`).join('');
+            $('confirmDetails').checked = false;
+            $('bookingSubmitBtn').disabled = true;
+            $('bookingForm').classList.add('hidden');
+            $('bookingReview').classList.remove('hidden');
+            $('bookingReview').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Step 2: final submit -- ipinapadala sa server
+        async function handleBookingSubmit() {
+            if (!pendingBooking || !$('confirmDetails').checked) return;
+            const b = pendingBooking, btn = $('bookingSubmitBtn');
+            const payload = { ...b };
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Sending...</span>';
+            try {
+                const fb = await fbReady, now = new Date().toISOString();
+                const S = (k, n) => String(payload[k] ?? '').trim().slice(0, n);
+                const data = { id: 'BK-' + Date.now().toString(36).toUpperCase() + '-' + Math.floor(Math.random() * 900 + 100) };
+                await fb.add('bookings', data.id, {
+                    clientName: S('clientName', 100), clientPhone: S('clientPhone', 30), clientEmail: S('clientEmail', 120),
+                    pickupLoc: S('pickupLoc', 200), dropoffLoc: S('dropoffLoc', 200),
+                    serviceType: S('serviceType', 60), truckType: S('truckType', 80),
+                    helpers: Math.min(20, Math.max(0, parseInt(payload.helpers, 10) || 0)),
+                    jackPallet: !!payload.jackPallet, floors: Math.min(100, Math.max(0, parseInt(payload.floors, 10) || 0)),
+                    itemPhotos: (payload.itemPhotos || []).filter(okImg).slice(0, 20),
+                    pickupPin: S('pickupPin', 40), dropoffPin: S('dropoffPin', 40),
+                    preferredDate: /^\d{4}-\d{2}-\d{2}$/.test(payload.preferredDate) ? payload.preferredDate : '',
+                    notes: S('notes', 1000), paymentMode: PAY_MODES.includes(payload.paymentMode) ? payload.paymentMode : '', status: 'Pending', quotedPrice: 0, createdAt: now, updatedAt: now
+                });
+                showToast('Booking Successful!', `Thank you, ${b.clientName}! Your booking request for ${serviceLabel(b.serviceType)} (${b.truckType}) has been received. Our team will contact you shortly. Reference: ${data.id}`);
+                $('bookingForm').reset();
+                ['helperQtyWrap', 'jackPicWrap', 'floorQtyWrap'].forEach(x => toggleBox(x, false));
+                itemPhotos = []; renderItemPhotos(); resetMap(); gateBooking();
+                fillTruckOptions();
+                pendingBooking = null;
+                showBookingForm();
+            } catch (err) {
+                showToast('Booking Not Sent', 'There was a problem sending your booking. Please try again or call us directly.');
+            } finally {
+                btn.disabled = !$('confirmDetails').checked;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i><span>Submit Booking Request</span>';
+            }
+        }
+        fillTruckOptions();
+
+        // ===================== LIVE MAP + PINS (Leaflet + OpenStreetMap) =====================
+        let bkMap = null, routeLayer = null, pinLayer = null, mapTimer = null, mapSeq = 0, pinMode = null;
+        const pins = { pickup: null, dropoff: null }, pinMarkers = {};
+        const COL = { pickup: '#16a34a', dropoff: '#dc2626' }, LET = { pickup: 'A', dropoff: 'B' }, LOCINPUT = { pickup: 'pickupLoc', dropoff: 'dropoffLoc' };
+        const wait = ms => new Promise(r => setTimeout(r, ms));
+        const mkIcon = s => L.divIcon({ className: '', iconSize: [28, 28], iconAnchor: [14, 14], html: `<div style="width:28px;height:28px;border-radius:50%;background:${COL[s]};color:#fff;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font:bold 12px sans-serif">${LET[s]}</div>` });
+        const pinStr = s => pins[s] ? pins[s][0].toFixed(6) + ',' + pins[s][1].toFixed(6) : '';
+        async function geocode(q) {
+            const j = await (await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ph&q=' + encodeURIComponent(q))).json();
+            return j[0] ? [+j[0].lat, +j[0].lon] : null;
+        }
+        async function reverseFill(s, ll) {
+            const inp = $(LOCINPUT[s]); if (inp.value.trim()) return;
+            try { const j = await (await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${ll[0]}&lon=${ll[1]}`)).json(); if (j.display_name && !inp.value.trim()) inp.value = j.display_name.slice(0, 200); } catch (e) { }
+        }
+        function initBookingMap() {
+            if (typeof L === 'undefined') { $('bookingMap').innerHTML = '<p class="p-4 text-xs text-slate-500">The map could not be loaded.</p>'; return; }
+            bkMap = L.map('bookingMap').setView([14.58, 121.12], 11);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(bkMap);
+            routeLayer = L.layerGroup().addTo(bkMap); pinLayer = L.layerGroup().addTo(bkMap);
+            bkMap.on('click', e => { if (pinMode) setPin(pinMode, [e.latlng.lat, e.latlng.lng], true); });
+            Object.keys(LOCINPUT).forEach(s => $(LOCINPUT[s]).addEventListener('input', () => {
+                if (pins[s]) { pins[s] = null; pinLayer.removeLayer(pinMarkers[s]); delete pinMarkers[s]; }
+                clearTimeout(mapTimer); mapTimer = setTimeout(updateRoute, 1200);
+            }));
+        }
+        function setPinMode(s) {
+            if (!bkMap) return;
+            pinMode = pinMode === s ? null : s;
+            ['pickup', 'dropoff'].forEach(k => $('pinBtn-' + k).classList.toggle('bg-slate-900', pinMode === k)), ['pickup', 'dropoff'].forEach(k => $('pinBtn-' + k).classList.toggle('text-white', pinMode === k));
+            bkMap.getContainer().style.cursor = pinMode ? 'crosshair' : '';
+            $('pinHint').textContent = pinMode ? 'Click the map to drop the ' + (pinMode === 'pickup' ? 'pick-up' : 'drop-off') + ' pin.' : '';
+        }
+        function setPin(s, ll, fill) {
+            pins[s] = ll;
+            if (pinMarkers[s]) pinLayer.removeLayer(pinMarkers[s]);
+            const m = L.marker(ll, { icon: mkIcon(s), draggable: true }).addTo(pinLayer);
+            m.on('dragend', () => { const p = m.getLatLng(); pins[s] = [p.lat, p.lng]; updateRoute(); });
+            pinMarkers[s] = m;
+            if (pinMode) setPinMode(pinMode);
+            if (fill) reverseFill(s, ll);
+            updateRoute();
+        }
+        async function updateRoute() {
+            if (!bkMap) return;
+            const my = ++mapSeq, info = $('routeInfo'), pts = {}, q = { pickup: $('pickupLoc').value.trim(), dropoff: $('dropoffLoc').value.trim() };
+            routeLayer.clearLayers();
+            try {
+                let called = false;
+                for (const s of ['pickup', 'dropoff']) {
+                    if (pins[s]) { pts[s] = pins[s]; continue; }
+                    if (q[s].length < 4) continue;
+                    info.textContent = 'Searching the map...';
+                    if (called) await wait(1100);
+                    called = true;
+                    pts[s] = await geocode(q[s]);
+                    if (my !== mapSeq) return;
+                    if (pts[s]) L.marker(pts[s], { icon: mkIcon(s) }).addTo(routeLayer);
+                }
+                const list = Object.values(pts).filter(Boolean);
+                if (pts.pickup && pts.dropoff) {
+                    const j = await (await fetch(`https://router.project-osrm.org/route/v1/driving/${pts.pickup[1]},${pts.pickup[0]};${pts.dropoff[1]},${pts.dropoff[0]}?overview=full&geometries=geojson`)).json();
+                    if (my !== mapSeq) return;
+                    const rt = j.routes && j.routes[0];
+                    if (rt) { L.geoJSON(rt.geometry, { style: { color: '#dc2626', weight: 5 } }).addTo(routeLayer); info.textContent = `Approx. ${(rt.distance / 1000).toFixed(1)} km, about ${Math.round(rt.duration / 60)} min drive`; }
+                    else info.textContent = 'No route found.';
+                } else info.textContent = list.length ? 'Add the other location to see the route.' : ((q.pickup || q.dropoff) ? 'Location not found. Add the city (e.g. "Cainta, Rizal") or drop a pin on the map.' : '');
+                if (list.length) bkMap.fitBounds(list, { padding: [40, 40], maxZoom: 15 });
+            } catch (e) { if (my === mapSeq) info.textContent = 'Map service unavailable. Please try again.'; }
+        }
+        function resetMap() {
+            pins.pickup = pins.dropoff = null;
+            if (bkMap) { pinLayer.clearLayers(); routeLayer.clearLayers(); }
+            Object.keys(pinMarkers).forEach(k => delete pinMarkers[k]);
+            $('routeInfo').textContent = '';
+        }
+        initBookingMap();
+
+        // ===================== FORM HELPERS =====================
+        const SAMPLEIMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="100%" height="100%" fill="#e2e8f0"/><text x="50%" y="50%" fill="#64748b" font-family="sans-serif" font-size="30" text-anchor="middle">Sample photo</text></svg>');
+        document.querySelectorAll('img[data-sample]').forEach(im => { const f = () => { im.onerror = null; im.src = SAMPLEIMG; }; if (im.complete && !im.naturalWidth) f(); else im.onerror = f; });
+        function toggleBox(id, on) { $(id).classList.toggle('hidden', !on); }
+        function gateBooking() { const ok = !!$('serviceType').value; $('bookingFields').disabled = !ok; $('serviceGate').classList.toggle('hidden', ok); }
+        gateBooking();
+
+        // Business clients -> Facebook Messenger. Ilagay ang link ng Facebook page, hal. 'https://m.me/PangalanNgPage'
+        const MESSENGER_URL = 'https://m.me/100083303824404';
+        function openMessenger() {
+            if (MESSENGER_URL === 'PASTE_HERE') { showToast('Customer Support', 'Messenger link is not set yet.'); return; }
+            window.open(MESSENGER_URL, '_blank', 'noopener');
+        }
+
+        // Item photos: i-compress sa browser at isinasama sa booking (walang Storage na kailangan)
+        let itemPhotos = [];
+        function renderItemPhotos() {
+            $('itemPhotoPreview').innerHTML = itemPhotos.map((p, i) => `<div class="relative"><img src="${p}" class="w-20 h-20 object-cover rounded-lg border border-slate-200" alt="Item photo"><button type="button" onclick="removeItemPhoto(${i})" aria-label="Remove photo" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-slate-900 text-white text-xs">&times;</button></div>`).join('');
+            $('itemPhotoCount').textContent = itemPhotos.length + '/20 photos';
+        }
+        function removeItemPhoto(i) { itemPhotos.splice(i, 1); renderItemPhotos(); }
+        // Target: ~8 KB bawat litrato (~11,000 characters pagkatapos ng base64)
+        function compressImage(file) {
+            return new Promise((res, rej) => {
+                const url = URL.createObjectURL(file), im = new Image();
+                im.onload = () => {
+                    let out = '';
+                    outer: for (const max of [640, 520, 420, 340, 280, 220]) {
+                        const s = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas');
+                        c.width = Math.max(1, Math.round(im.width * s)); c.height = Math.max(1, Math.round(im.height * s));
+                        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+                        for (const q of [0.6, 0.5, 0.4, 0.3]) { out = c.toDataURL('image/jpeg', q); if (out.length <= 11000) break outer; }
+                    }
+                    URL.revokeObjectURL(url); res(out);
+                };
+                im.onerror = () => { URL.revokeObjectURL(url); rej(); };
+                im.src = url;
+            });
+        }
+        async function addItemPhotos(input) {
+            const files = [...input.files]; input.value = '';
+            for (const f of files) {
+                if (itemPhotos.length >= 20) { showToast('Photo Limit', 'You can upload up to 20 photos.'); break; }
+                if (!f.type.startsWith('image/')) continue;
+                try { itemPhotos.push(await compressImage(f)); } catch (e) { showToast('Photo Error', 'That image could not be read.'); }
+            }
+            renderItemPhotos();
+        }
+
+        // Admin: mga dagdag na detalye ng booking (add-ons, pins, litrato)
+        const okImg = p => /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(String(p));
+        function bookingExtras(b) {
+            const bits = [];
+            if (b.jackPallet) bits.push('Jack Pallet');
+            if (Number(b.floors) > 0) bits.push(Number(b.floors) + ' floor(s)');
+            let h = bits.length ? `<br><span class="text-slate-500">${bits.join(' • ')}</span>` : '';
+            const link = (p, l) => p ? `<a href="https://www.google.com/maps?q=${encodeURIComponent(p)}" target="_blank" rel="noopener" class="text-mkpRed underline mr-2">${l}</a>` : '';
+            const pl = link(b.pickupPin, 'Pick-up pin') + link(b.dropoffPin, 'Drop-off pin');
+            if (pl) h += `<br><span class="text-[11px]">${pl}</span>`;
+            const ph = (Array.isArray(b.itemPhotos) ? b.itemPhotos : []).filter(okImg);
+            if (ph.length) h += '<br><span class="inline-flex gap-1 mt-1">' + ph.slice(0, 4).map((p, i) => `<img src="${p}" onclick="openItemPhotos('${escapeHtml(b.id)}', ${i})" class="w-9 h-9 object-cover rounded cursor-pointer border border-slate-200" alt="Item photo">`).join('') + (ph.length > 4 ? `<span class="text-[11px] text-slate-500 self-center">+${ph.length - 4}</span>` : '') + '</span>';
+            return h;
+        }
+        function openItemPhotos(id, i) {
+            const b = allBookings.find(x => x.id === id), ph = b && Array.isArray(b.itemPhotos) ? b.itemPhotos.filter(okImg) : [];
+            if (!ph.length) return;
+            lbT = { name: 'Item photos - ' + id, images: ph }; lbI = i || 0; showLb();
+            $('lightbox').classList.remove('hidden'); document.body.classList.add('overflow-hidden');
+        }
+
+        // ===================== SERVICE TERMS & CONDITIONS =====================
+        const EQUIP_SERVICES = ['Goods Delivery', 'Medical Supplies', 'Warehouse Transfer', 'Telco Equipment'];
+        const PAY_MODES = ['COD', 'Bank Transfer', 'E-Wallet'];
+        const GALLERIES = {
+            equip: ['images/equipment-guide.jpg'],
+            pack: ['images/hm-moving-day-policy.jpg', 'images/hm-no-packing.jpg', 'images/hm-cling-wrap.jpg', 'images/hm-wrap-big-items.jpg'],
+            dismantle: ['images/hm-dismantle.jpg'],
+            condo: ['images/condo-clearance-guide.jpg', 'images/condo-l300-shuttle.jpg']
+        };
+        let svcCurrent = '';
+        function openGallery(key, i) {
+            lbT = { name: 'Photo guide', images: GALLERIES[key] }; lbI = i || 0; showLb();
+            $('lightbox').classList.remove('hidden'); document.body.classList.add('overflow-hidden');
+        }
+        function openFeedback(btn) {
+            GALLERIES.feedback = [...document.querySelectorAll('#feedbackGrid img')].map(x => x.getAttribute('src'));
+            openGallery('feedback', [...document.querySelectorAll('#feedbackGrid > button')].indexOf(btn));
+        }
+        function svcGallery(key) {
+            const one = GALLERIES[key].length === 1;
+            return `<div class="grid ${one ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'} gap-3 mt-5">${GALLERIES[key].map((s, i) => `<img src="${s}" onclick="openGallery('${key}', ${i})" class="w-full rounded-xl border border-slate-200 cursor-zoom-in bg-white" alt="Guide ${i + 1}">`).join('')}</div><p class="text-[11px] text-slate-400 mt-1">Tap an image to enlarge.</p>`;
+        }
+        const svcCard = (icon, title, inner) => `<div class="bg-white border border-slate-200 rounded-2xl p-5"><h4 class="text-sm font-extrabold uppercase tracking-wide text-slate-800 mb-4"><i class="fa-solid ${icon} text-mkpRed mr-2"></i>${title}</h4>${inner}</div>`;
+        const svcNum = arr => `<ul class="space-y-3">${arr.map((t, i) => `<li class="flex gap-3"><span class="shrink-0 w-6 h-6 rounded-full bg-mkpRed text-white text-xs font-bold flex items-center justify-center">${i + 1}</span><p class="text-sm text-slate-700 leading-relaxed">${t}</p></li>`).join('')}</ul>`;
+        const svcDots = arr => `<ul class="space-y-2">${arr.map(t => `<li class="flex gap-3"><span class="shrink-0 mt-2 w-2 h-2 rounded-full bg-mkpRed"></span><p class="text-sm text-slate-700 leading-relaxed">${t}</p></li>`).join('')}</ul>`;
+        const svcSub = t => `<p class="text-xs font-bold uppercase text-slate-500 mt-5 mb-2">${t}</p>`;
+
+        function svcEquipment() {
+            return svcCard('fa-dolly', 'Equipment &amp; Medical Equipment Delivery (150 kg – 800 kg)', svcNum([
+                '<strong>Cargo, medical equipment, or equipment weighing 150 kg up to 800 kg.</strong> Please provide the exact dimensions, weight, and a sample picture so we can determine what truck to use.',
+                '<strong>Pallet jack.</strong> If you rent a pallet jack, it is much better for palletized items, equipment without wheels, or heavy cargo and equipment weighing 150 kg up to 800 kg, to make loading and unloading easier.',
+                '<strong>Flat ground.</strong> Please find out if the drop-off or pick-up location is flat. Because of the 150 kg to 800 kg weight, it will be difficult to carry the equipment or cargo if there are stairs.',
+                '<strong>Reminder:</strong> the truck&#39;s tail lift is attached to the back of the truck and is not removable. The lift is used only for loading and unloading equipment or cargo.'
+            ]) + svcGallery('equip') + '<video controls playsinline preload="metadata" class="w-full mt-4 rounded-xl bg-black"><source src="videos/equipment-guide.mp4" type="video/mp4"></video>');
+        }
+        function svcHouseMoving() {
+            return svcCard('fa-box-open', 'Packing &amp; Wrapping Policy', svcNum([
+                '<strong>We do not offer general packing services,</strong> so your items should be packed and ready before the team arrives.',
+                'However, our team will provide <strong>complimentary cling wrap protection (one roll included) for your big items only,</strong> such as the sofa, bed, refrigerator, washing machine, and cabinets.'
+            ]) + svcGallery('pack')) +
+            svcCard('fa-screwdriver-wrench', 'Dismantling Works', svcNum([
+                'Dismantling depends on the item to be dismantled. You may send a picture of the item so we can check whether our team can handle it.',
+                '<strong>Items we do not dismantle:</strong> split-type aircon units; cabinets made of weak or low-quality wood (<em>kusot</em>); carpenter&#39;s duties and other electrical works.'
+            ]) + svcGallery('dismantle')) +
+            svcCard('fa-triangle-exclamation', 'Exclusions &amp; Reminders',
+                svcSub('Not included') + svcDots(['Building permit fees and road use fee', 'Dismantling of split-type aircon units', 'Disconnection and reconnection of appliances']) +
+                svcSub('Reminders') + svcDots([
+                    'To avoid delays, please inform your Village Administrator or Building Administrator (whichever is applicable) of your upcoming move-out and move-in, and secure a gate pass accordingly.',
+                    'For a safe and convenient move, please make sure you protect all your items and give the necessary instructions to the helper and driver on how to handle them.'
+                ]));
+        }
+        function svcCancellation() {
+            return svcCard('fa-ban', 'Cancellation Policy', svcNum([
+                'A cancellation made by the hirer within 24 hours of the hire date will result in the hirer being liable to pay three hundred pesos (<strong>PHP 300</strong>).',
+                'A cancellation within four (4) hours of the hire date and time will result in the client being liable to pay two thousand five hundred pesos (<strong>PHP 2,500</strong>) for a pickup location within NCR. For a pickup point outside NCR, the cancellation penalty within 4 hours will be <strong>50% of the booking amount</strong>.'
+            ]));
+        }
+        function svcCondo() {
+            return svcCard('fa-building', 'Truck Access &amp; Vertical Clearance', svcNum([
+                '<strong>The required vertical clearance for a 6-wheeler closed van is 3M up to 3.5M.</strong>',
+                'If it will not fit, please ask the condo&#39;s admin office <strong>where the truck can park</strong> and <strong>if the truck can get close to the service elevator.</strong>',
+                '<strong>Inform us immediately</strong> so we can provide you with the correct quotation.'
+            ]) + svcGallery('condo') + '<video controls playsinline preload="metadata" class="w-full mt-4 rounded-xl bg-black"><source src="videos/condo-access.mp4" type="video/mp4"></video>');
+        }
+        function svcWaiting() {
+            return svcCard('fa-hourglass-half', 'Waiting Time Policy',
+                '<p class="text-sm text-slate-700 leading-relaxed mb-4">We only charge waiting time in the following situations:</p>' + svcNum([
+                    '<strong>Items are not ready.</strong> The team is kept waiting because the items are not yet ready, or the client does not allow loading to start because the items are not ready.',
+                    '<strong>No permit.</strong> Loading is already finished, or the truck has arrived at the drop-off location, but the team is not allowed to exit or enter because there is no permit to move-out or move-in.',
+                    '<strong>Client is away.</strong> The client went somewhere else and the team has to wait until the client arrives.'
+                ]) + '<div class="mt-4 bg-red-50 border border-red-100 rounded-xl p-4 flex items-center justify-between gap-3"><span class="text-xs font-bold uppercase text-slate-600">Waiting time rate</span><span class="text-lg font-extrabold text-mkpRed">PHP 500 <span class="text-xs font-bold text-slate-500">per hour</span></span></div>');
+        }
+        function openServiceInfo(service) {
+            svcCurrent = service;
+            const body = (EQUIP_SERVICES.includes(service) ? svcEquipment() : '') + (service === 'Office Relocation' || service === 'Condo Relocation' ? svcCondo() : '') + (service === 'House Moving' || service === 'Condo Relocation' ? svcHouseMoving() : '') + svcWaiting() + svcCancellation();
+            $('svcBox').innerHTML = `
+                <div class="bg-slate-900 text-white p-5 sm:p-6 flex items-start justify-between gap-4">
+                    <div><p class="text-[11px] uppercase tracking-widest text-slate-400">Terms &amp; Conditions</p><h3 class="text-xl sm:text-2xl font-extrabold">${serviceLabel(service)}</h3></div>
+                    <button onclick="closeServiceInfo()" aria-label="Close" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-4 sm:p-6 space-y-4">${body}</div>
+                <div class="sticky bottom-0 bg-white border-t border-slate-200 p-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                    <p class="text-xs text-slate-500">By continuing, you confirm that you have read and agree to the terms above.</p>
+                    <div class="flex gap-2"><button onclick="closeServiceInfo()" class="px-5 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-sm font-bold">Close</button><button onclick="continueFromInfo()" class="px-5 py-3 rounded-xl bg-mkpRed hover:bg-red-700 text-white text-sm font-bold">I Agree &mdash; Select Truck</button></div>
+                </div>`;
+            $('svcModal').classList.remove('hidden'); $('svcModal').scrollTop = 0;
+            document.body.classList.add('overflow-hidden');
+        }
+        function closeServiceInfo() {
+            $('svcModal').classList.add('hidden');
+            const v = $('svcBox').querySelector('video'); if (v) v.pause();
+            if ($('truckModal').classList.contains('hidden') && $('lightbox').classList.contains('hidden')) document.body.classList.remove('overflow-hidden');
+        }
+        function continueFromInfo() { const s = svcCurrent; closeServiceInfo(); openTruckPicker(s); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('svcModal').classList.contains('hidden') && $('lightbox').classList.contains('hidden')) closeServiceInfo(); }, true);
+
+        // ===================== ADMIN: BOOKING DETAILS VIEW =====================
+        const BV_BADGE = { 'Pending': 'bg-amber-100 text-amber-800', 'Confirmed': 'bg-blue-100 text-blue-800', 'Dispatched': 'bg-indigo-100 text-indigo-800', 'In-Transit': 'bg-purple-100 text-purple-800', 'Completed': 'bg-emerald-100 text-emerald-800', 'Cancelled': 'bg-red-100 text-red-800' };
+        function viewBooking(id) {
+            const b = allBookings.find(x => x.id === id); if (!b) return;
+            const E = escapeHtml, t = truckByName(b.truckType);
+            const dt = s => s ? new Date(s).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
+            const pd = b.preferredDate ? new Date(b.preferredDate + 'T00:00:00').toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-';
+            const card = (icon, title, inner, cls) => `<div class="bg-white border border-slate-200 rounded-2xl p-5 ${cls || ''}"><h4 class="text-xs font-extrabold uppercase tracking-wide text-slate-500 mb-3"><i class="fa-solid ${icon} text-mkpRed mr-2"></i>${title}</h4>${inner}</div>`;
+            const row = (k, v) => `<div class="py-2 border-b border-slate-100 last:border-0"><p class="text-[11px] uppercase font-bold text-slate-400">${k}</p><p class="text-sm font-semibold text-slate-800 break-words whitespace-pre-line">${v}</p></div>`;
+            const pin = p => p ? ` <a href="https://www.google.com/maps?q=${encodeURIComponent(p)}" target="_blank" rel="noopener" class="ml-2 text-xs text-mkpRed underline font-bold"><i class="fa-solid fa-location-dot"></i> Open pin</a>` : '';
+            const chips = [];
+            if (Number(b.helpers) > 0) chips.push(b.helpers + ' Helper' + (b.helpers > 1 ? 's' : ''));
+            if (b.jackPallet) chips.push('Jack Pallet');
+            if (Number(b.floors) > 0) chips.push(b.floors + ' Floor' + (b.floors > 1 ? 's' : ''));
+            const chip = c => `<span class="inline-block bg-red-50 text-mkpRed border border-red-100 text-xs font-bold px-3 py-1 rounded-full mr-2 mb-2">${E(c)}</span>`;
+            const ph = (Array.isArray(b.itemPhotos) ? b.itemPhotos : []).filter(okImg);
+            const org = b.pickupPin || b.pickupLoc, dst = b.dropoffPin || b.dropoffLoc;
+            const route = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(org)}&destination=${encodeURIComponent(dst)}&travelmode=driving`;
+            const inp = 'w-full text-sm border border-slate-300 rounded-xl p-2.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none';
+            $('bvBox').innerHTML = `
+                <div class="bg-slate-900 text-white p-5 sm:p-6 flex items-start justify-between gap-4">
+                    <div><p class="text-[11px] uppercase tracking-widest text-slate-400">Booking</p><h3 class="text-xl sm:text-2xl font-extrabold">${E(b.id)}</h3><p class="text-xs text-slate-400 mt-1">Submitted ${E(dt(b.createdAt))}</p></div>
+                    <div class="flex items-center gap-3"><span class="text-xs font-bold px-3 py-1.5 rounded-full ${BV_BADGE[b.status] || 'bg-slate-200 text-slate-800'}">${E(b.status)}</span><button onclick="closeBookingView()" aria-label="Close" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20"><i class="fa-solid fa-xmark"></i></button></div>
+                </div>
+                <div class="p-4 sm:p-6 space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${card('fa-user', 'Client', row('Name', E(b.clientName)) + row('Phone', `<a href="tel:${E(b.clientPhone)}" class="text-mkpRed underline">${E(b.clientPhone)}</a>`) + row('Email', b.clientEmail ? `<a href="mailto:${E(b.clientEmail)}" class="text-mkpRed underline">${E(b.clientEmail)}</a>` : '-'))}
+                        ${card('fa-calendar-day', 'Schedule & Price', row('Preferred Date of Pickup', E(pd)) + row('Quoted Price', E(peso(b.quotedPrice))) + row('Mode of Payment', E(b.paymentMode || '-')) + row('Confirmation Email', b.confirmationSentAt ? 'Sent ' + E(dt(b.confirmationSentAt)) : 'Not sent'))}
+                    </div>
+                    ${card('fa-route', 'Trip', row('Pick-up Address', E(b.pickupLoc) + pin(b.pickupPin)) + row('Drop-off Address', E(b.dropoffLoc) + pin(b.dropoffPin)) + `<a href="${route}" target="_blank" rel="noopener" class="inline-block mt-3 bg-slate-900 hover:bg-slate-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl"><i class="fa-solid fa-diamond-turn-right mr-1"></i>Open route in Google Maps</a>`)}
+                    ${card('fa-truck', 'Service & Equipment',
+                        row('Service / Cargo Type', E(b.serviceType)) +
+                        `<div class="py-2 border-b border-slate-100"><p class="text-[11px] uppercase font-bold text-slate-400 mb-1">Truck</p><div class="flex items-center gap-3">${t ? imgTag(t, 0, 'w-24 h-16 object-cover rounded-lg shrink-0 cursor-zoom-in', `onclick="openLightbox('${t.id}', 0)"`) : ''}<div><p class="text-sm font-semibold text-slate-800">${E(b.truckType)}</p>${t ? `<p class="text-xs text-slate-500">${E(t.dims)}</p>` : ''}</div></div></div>` +
+                        row('Always Included', 'Hand Trolley, Push Cart') +
+                        `<div class="pt-2"><p class="text-[11px] uppercase font-bold text-slate-400 mb-2">Add-ons</p>${chips.length ? chips.map(chip).join('') : '<p class="text-sm font-semibold text-slate-800">None</p>'}</div>`)}
+                    ${card('fa-camera', `Photos of Items to be Loaded (${ph.length})`, ph.length ? `<div class="grid grid-cols-3 sm:grid-cols-5 gap-2">${ph.map((p, i) => `<img src="${p}" onclick="openItemPhotos('${E(b.id)}', ${i})" class="w-full aspect-square object-cover rounded-lg border border-slate-200 cursor-zoom-in" alt="Item photo ${i + 1}">`).join('')}</div>` : '<p class="text-sm text-slate-500">No photos uploaded.</p>')}
+                    ${card('fa-note-sticky', 'Client Notes', `<p class="text-sm text-slate-800 whitespace-pre-line break-words">${b.notes ? E(b.notes) : '-'}</p>`)}
+                    ${card('fa-user-shield', 'Admin', `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-[11px] uppercase font-bold text-slate-400">Status</label><select onchange="modalSave('${E(b.id)}','status',this.value)" class="${inp}">${BOOKING_STATUSES.map(s => `<option ${s === b.status ? 'selected' : ''}>${s}</option>`).join('')}</select></div><div><label class="text-[11px] uppercase font-bold text-slate-400">Quoted Price (PHP)</label><input type="number" min="0" step="0.01" value="${Number(b.quotedPrice) || 0}" onchange="modalSave('${E(b.id)}','quotedPrice',this.value)" class="${inp}"></div></div><label class="block text-[11px] uppercase font-bold text-slate-400 mt-3">Admin Notes</label><textarea rows="2" onchange="modalSave('${E(b.id)}','adminNotes',this.value)" class="${inp}">${E(b.adminNotes || '')}</textarea><p class="text-[11px] text-slate-400 mt-2">Last updated ${E(dt(b.updatedAt))}</p>`)}
+                </div>`;
+            $('bookingModal').classList.remove('hidden');
+            $('bookingModal').scrollTop = 0;
+        }
+        function closeBookingView() { $('bookingModal').classList.add('hidden'); }
+        async function modalSave(id, field, value) { await saveBookingField(id, field, value); renderBookingsTable(); viewBooking(id); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('bookingModal').classList.contains('hidden') && $('lightbox').classList.contains('hidden')) closeBookingView(); }, true);
+
+        // ===================== EMAIL KAPAG NA-CONFIRM (EmailJS) =====================
+       const EMAILJS = { serviceId: 'service_wmrcmlu', templateId: 'template_7ihi0fa', publicKey: '5HnbVLevP8uQGVgqJ' };
+        async function sendConfirmationEmail(b) {
+            if (!b.clientEmail) { showToast('Walang Email', 'Na-confirm na, pero walang email ang client kaya walang naipadala.'); return; }
+            if (Object.values(EMAILJS).includes('PASTE_HERE')) { showToast('Email Hindi Pa Naka-set', 'Ilagay muna ang EmailJS keys sa index.html.'); return; }
+            if (b.confirmationSentAt && !confirm('Naipadala na ang confirmation email. Ipadala ulit?')) return;
+            const date = b.preferredDate ? new Date(b.preferredDate + 'T00:00:00').toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' }) : 'To be scheduled';
+            try {
+                const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ service_id: EMAILJS.serviceId, template_id: EMAILJS.templateId, user_id: EMAILJS.publicKey, template_params: {
+                        to_email: b.clientEmail, client_name: b.clientName, booking_id: b.id, service: b.serviceType, truck: b.truckType,
+                        helpers: Number(b.helpers) > 0 ? b.helpers + ' helper(s)' : 'None', pickup: b.pickupLoc, dropoff: b.dropoffLoc,
+                        date, price: peso(b.quotedPrice), notes: b.notes || '-', payment_mode: b.paymentMode || '-' } })
+                });
+                if (!res.ok) throw new Error(await res.text());
+                const now = new Date().toISOString();
+                await (await fbReady).patch('bookings', b.id, { confirmationSentAt: now });
+                const x = allBookings.find(k => k.id === b.id); if (x) x.confirmationSentAt = now;
+                showToast('Email Naipadala', 'Naipadala ang confirmation sa ' + b.clientEmail);
+            } catch (err) { showToast('Hindi Naipadala ang Email', String(err.message || err).slice(0, 120)); }
+        }
+
+        // ===================== FLEET MANAGER =====================
+        let allFleet = [];
+        const FLEET_BADGE = { 'Available': 'bg-emerald-100 text-emerald-700', 'On-Trip': 'bg-amber-100 text-amber-700', 'Maintenance': 'bg-red-100 text-red-700' };
+        async function loadFleet() {
+            $('fleetModels').innerHTML = TRUCKS.map(t => `<option value="${escapeHtml(t.name)}">`).join('');
+            try { allFleet = (await (await fbReady).list('fleet')).sort((a, b) => String(a.unitId).localeCompare(String(b.unitId), undefined, { numeric: true })); }
+            catch (e) { showToast('Fleet', 'Hindi ma-load. Siguraduhing na-publish ang bagong Firestore rules.'); }
+            renderFleet();
+        }
+        function renderFleet() {
+            const lbl = 'text-xs text-slate-400';
+            $('fleetGrid').innerHTML = allFleet.length ? allFleet.map(f => `
+                <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between"><h4 class="font-extrabold text-slate-900">${escapeHtml(f.unitId)}</h4><span class="text-[11px] font-bold px-2.5 py-1 rounded-full ${FLEET_BADGE[f.status] || ''}">${escapeHtml(f.status)}</span></div>
+                    <div class="mt-3 space-y-2 text-sm">
+                        <div><p class="${lbl}">Truck Model / Type</p><p class="font-semibold text-slate-800">${escapeHtml(f.model)}</p></div>
+                        <div><p class="${lbl}">Assigned Driver</p><p class="font-semibold text-slate-800"><i class="fa-solid fa-id-card text-mkpRed mr-1"></i>${escapeHtml(f.driver)}</p></div>
+                        <div><p class="${lbl}">Current Location / Base</p><p class="font-semibold text-slate-800"><i class="fa-solid fa-location-dot text-emerald-500 mr-1"></i>${escapeHtml(f.location)}</p></div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                        <select onchange="setFleetStatus('${f.id}', this.value)" class="text-xs border border-slate-300 rounded-lg p-2 bg-slate-50">${['Available', 'On-Trip', 'Maintenance'].map(s => `<option ${s === f.status ? 'selected' : ''}>${s}</option>`).join('')}</select>
+                        <div class="flex gap-2"><button onclick="openFleetForm('${f.id}')" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteFleet('${f.id}')" class="w-8 h-8 rounded-lg bg-red-50 hover:bg-red-100 text-red-600" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button></div>
+                    </div>
+                </div>`).join('') : '<p class="text-sm text-slate-500 col-span-full">Wala pang truck unit. Pindutin ang "Add New Truck Unit".</p>';
+        }
+        function openFleetForm(id) {
+            const f = allFleet.find(x => x.id === id) || {};
+            $('fl-id').value = f.id || '';
+            $('fl-unit').value = f.unitId || 'MKP-' + String(allFleet.length + 1).padStart(2, '0');
+            $('fl-model').value = f.model || ''; $('fl-driver').value = f.driver || ''; $('fl-loc').value = f.location || '';
+            $('fl-status').value = f.status || 'Available';
+            $('fleetForm').classList.remove('hidden');
+        }
+        async function saveFleet(e) {
+            e.preventDefault();
+            const id = $('fl-id').value || 'FLT-' + Date.now().toString(36).toUpperCase(), old = allFleet.find(x => x.id === id), now = new Date().toISOString();
+            const data = { unitId: $('fl-unit').value.trim().slice(0, 30), model: $('fl-model').value.trim().slice(0, 80), driver: $('fl-driver').value.trim().slice(0, 60),
+                location: $('fl-loc').value.trim().slice(0, 80), status: $('fl-status').value, createdAt: (old && old.createdAt) || now, updatedAt: now };
+            try { await (await fbReady).add('fleet', id, data); $('fleetForm').classList.add('hidden'); await loadFleet(); showToast('Fleet', 'Na-save ang truck unit.'); }
+            catch (err) { showToast('Hindi Na-save', 'May error: ' + (err.code || err.message)); }
+        }
+        async function setFleetStatus(id, status) {
+            try { await (await fbReady).patch('fleet', id, { status, updatedAt: new Date().toISOString() }); const f = allFleet.find(x => x.id === id); if (f) f.status = status; renderFleet(); }
+            catch (err) { showToast('Hindi Na-save', 'May error: ' + (err.code || err.message)); }
+        }
+        async function deleteFleet(id) {
+            if (!confirm('Tanggalin ang truck unit na ito?')) return;
+            try { await (await fbReady).del('fleet', id); allFleet = allFleet.filter(x => x.id !== id); renderFleet(); }
+            catch (err) { showToast('Hindi Natanggal', 'May error: ' + (err.code || err.message)); }
+        }
+
+        // ===================== ADMIN DASHBOARD =====================
+        const BOOKING_STATUSES = ['Pending', 'Confirmed', 'Dispatched', 'In-Transit', 'Completed', 'Cancelled'];
+        const ONGOING_STATUSES = ['Confirmed', 'Dispatched', 'In-Transit'];
+        const STATUS_COLORS = {
+            Pending: 'bg-slate-100 text-slate-700',
+            Confirmed: 'bg-sky-100 text-sky-700',
+            Dispatched: 'bg-amber-100 text-amber-700',
+            'In-Transit': 'bg-mkpOrange/20 text-orange-700',
+            Completed: 'bg-emerald-100 text-emerald-700',
+            Cancelled: 'bg-rose-100 text-rose-700'
+        };
+
+        let adminToken = localStorage.getItem('mkp_admin_token') || null;
+        let adminUsername = localStorage.getItem('mkp_admin_username') || '';
+        let allBookings = [];
+        let allExpenses = [];
+        let calendarViewDate = new Date();
+        let selectedCalendarDay = '';
+        let expensePeriod = 'day';
+        let analyticsMode = 'all';
+        let chartInstances = {};
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[ch]));
+        }
+
+        function localDateKey(value) {
+            const d = value instanceof Date ? value : new Date(value);
+            if (isNaN(d.getTime())) return '';
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function bookingDateKey(b) {
+            return b.preferredDate || localDateKey(b.createdAt);
+        }
+
+        function peso(n) {
+            return '₱' + (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // ---------- Firebase shim: ginagaya ang dating /api/* para gumana pa rin ang buong Admin ----------
+        const R = (data, ok = true, status = 200) => ({ ok, status, json: async () => data });
+        async function mkpFetch(path, opts) {
+            opts = opts || {};
+            const m = (opts.method || 'GET').toUpperCase();
+            const body = opts.body ? JSON.parse(opts.body) : {};
+            const fb = await fbReady, now = new Date().toISOString();
+            try {
+                const x = path.match(/^\/api\/(bookings|expenses)(?:\/(.+))?$/);
+                if (x) {
+                    const col = x[1], id = x[2] && decodeURIComponent(x[2]);
+                    if (m === 'GET') return R(await fb.list(col));
+                    if (m === 'DELETE') { await fb.del(col, id); return R({ success: true }); }
+                    if (m === 'PATCH') {
+                        const upd = {};
+                        if (body.status !== undefined) upd.status = String(body.status);
+                        if (body.quotedPrice !== undefined) upd.quotedPrice = Math.max(0, Number(body.quotedPrice) || 0);
+                        if (body.adminNotes !== undefined) upd.adminNotes = String(body.adminNotes).slice(0, 1000);
+                        upd.updatedAt = now;
+                        await fb.patch(col, id, upd);
+                        return R({ success: true, booking: { ...(allBookings.find(b => b.id === id) || { id }), ...upd } });
+                    }
+                    if (m === 'POST' && col === 'expenses') {
+                        const amount = Number(body.amount), date = String(body.date || '').slice(0, 10);
+                        if (!date || !(amount > 0)) return R({ success: false, message: 'Kulang o maling impormasyon ng gastos.' }, false, 400);
+                        const exp = { id: 'EXP-' + Date.now().toString(36).toUpperCase(), category: String(body.category || 'Iba pa').slice(0, 60), description: String(body.description || '').slice(0, 300), amount, date, recordedBy: adminUsername, createdAt: now };
+                        await fb.add('expenses', exp.id, exp);
+                        return R({ success: true, expense: exp });
+                    }
+                }
+                if (path === '/api/admin/logout') { await fb.logout(); return R({ success: true }); }
+                if (path === '/api/admin/change-pin') {
+                    if (String(body.newPin || '').length < 6) return R({ success: false, message: 'Ang bagong password ay dapat hindi bababa sa 6 na karakter.' }, false, 400);
+                    await fb.pass(body.newPin);
+                    return R({ success: true });
+                }
+            } catch (err) {
+                if (err.code === 'permission-denied' || err.code === 'unauthenticated') { adminSessionExpired(); throw new Error('session-expired'); }
+                if (err.code === 'auth/requires-recent-login') return R({ success: false, message: 'Mag-logout at mag-login ulit, tapos subukan ulit.' }, false, 400);
+                return R({ success: false, message: 'May error: ' + (err.code || err.message) }, false, 500);
+            }
+            return R({ success: false, message: 'Hindi suportado.' }, false, 404);
+        }
+
+        function adminSessionExpired() {
+            adminToken = null;
+            document.getElementById('admin-dashboard').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('flex');
+            showToast('Session Expired', 'Mag-login ulit para magpatuloy.');
+            openAdminLogin();
+        }
+
+        // ---------- Login / Logout ----------
+        async function adminEntryPoint() {
+            const fb = await fbReady, u = await fb.user();
+            if (u) { adminUsername = u.email; openAdminDashboard(); return; }
+            openAdminLogin();
+        }
+
+        function openAdminLogin() {
+            document.getElementById('admin-login-modal').classList.remove('hidden');
+            document.getElementById('admin-login-modal').classList.add('flex');
+            document.getElementById('admin-login-error').classList.add('hidden');
+        }
+        function closeAdminLogin() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
+            document.getElementById('admin-login-modal').classList.remove('flex');
+        }
+
+        async function handleAdminLogin(event) {
+            event.preventDefault();
+            const btn = document.getElementById('admin-login-btn');
+            const errEl = document.getElementById('admin-login-error');
+            errEl.classList.add('hidden');
+            btn.disabled = true;
+            try {
+                const fb = await fbReady;
+                const cred = await fb.login(document.getElementById('admin-login-username').value.trim(), document.getElementById('admin-login-pin').value);
+                adminUsername = cred.user.email;
+                document.getElementById('admin-login-pin').value = '';
+                closeAdminLogin();
+                openAdminDashboard();
+            } catch (err) {
+                errEl.innerText = err.code === 'auth/network-request-failed' ? 'Walang koneksyon sa internet.' : (err.code === 'auth/too-many-requests' ? 'Masyadong maraming maling subok. Maghintay muna.' : 'Maling email o password.');
+                errEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function openAdminDashboard() {
+            const dash = document.getElementById('admin-dashboard');
+            dash.classList.remove('hidden');
+            dash.classList.add('flex');
+            document.getElementById('admin-whoami').innerText = adminUsername ? ('Admin: ' + adminUsername) : '';
+            document.body.style.overflow = 'hidden';
+
+            try {
+                await Promise.all([refreshBookings(), refreshExpenses()]);
+            } catch (err) { /* hinawakan na ng mkpFetch (401) o i-aalert sa ibaba */ }
+
+            const today = localDateKey(new Date());
+            document.getElementById('new-exp-date').value = today;
+
+            switchAdminTab('dashboard');
+        }
+
+        function closeAdminDashboard() {
+            const dash = document.getElementById('admin-dashboard');
+            dash.classList.add('hidden');
+            dash.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        async function adminLogout() {
+            try { await mkpFetch('/api/admin/logout', { method: 'POST' }); } catch (err) { /* ok lang kahit mag-fail */ }
+            adminToken = null;
+            adminUsername = '';
+            localStorage.removeItem('mkp_admin_token');
+            localStorage.removeItem('mkp_admin_username');
+            closeAdminDashboard();
+            showToast('Naka-logout', 'Matagumpay kang naka-logout sa Admin Dashboard.');
+        }
+
+
+        // ---------- Tabs ----------
+        function switchAdminTab(tab) {
+            ['dashboard', 'bookings', 'calendar', 'analytics', 'expenses', 'fleet'].forEach(t => {
+                const view = document.getElementById('admin-view-' + t);
+                const nav = document.getElementById('admin-nav-' + t);
+                const active = t === tab;
+                if (view) view.classList.toggle('hidden', !active);
+                if (nav) nav.className = 'shrink-0 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold whitespace-nowrap cursor-pointer ' +
+                    (active ? 'bg-mkpRed text-white' : 'text-slate-300 hover:text-white hover:bg-slate-800');
+            });
+            if (tab === 'dashboard') { renderDashboardCards(); renderOngoingList(); }
+            if (tab === 'fleet') loadFleet();
+            if (tab === 'bookings') renderBookingsTable();
+            if (tab === 'calendar') renderCalendar();
+            if (tab === 'analytics') { if (!document.getElementById('an-start-date').value) setAnalyticsQuickFilter('all'); else renderAnalytics(); }
+            if (tab === 'expenses') renderExpensesTable();
+        }
+
+        // ---------- Data loading ----------
+        async function refreshBookings() {
+            try {
+                const res = await mkpFetch('/api/bookings');
+                if (res.ok) allBookings = await res.json();
+            } catch (err) { /* hinawakan na ng mkpFetch kung session expired */ }
+        }
+        async function refreshExpenses() {
+            try {
+                const res = await mkpFetch('/api/expenses');
+                if (res.ok) allExpenses = await res.json();
+            } catch (err) { /* same */ }
+        }
+
+        // ---------- DASHBOARD TAB ----------
+        function renderDashboardCards() {
+            const monthKey = localDateKey(new Date()).slice(0, 7);
+            const total = allBookings.length;
+            const pending = allBookings.filter(b => b.status === 'Pending').length;
+            const ongoing = allBookings.filter(b => ONGOING_STATUSES.includes(b.status)).length;
+            const completedThisMonth = allBookings.filter(b => b.status === 'Completed' && bookingDateKey(b).startsWith(monthKey));
+            const revenueThisMonth = completedThisMonth.reduce((s, b) => s + (Number(b.quotedPrice) || 0), 0);
+            const expensesThisMonth = allExpenses.filter(e => String(e.date).startsWith(monthKey)).reduce((s, e) => s + (Number(e.amount) || 0), 0);
+
+            const card = (label, value, cls, icon) => `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1"><i class="fa-solid ${icon}"></i> ${label}</p>
+                    <p class="text-xl sm:text-2xl font-extrabold mt-1 ${cls}">${value}</p>
+                </div>`;
+            document.getElementById('admin-dash-cards').innerHTML =
+                card('Total Bookings', total, 'text-slate-900', 'fa-list') +
+                card('Pending', pending, 'text-slate-700', 'fa-hourglass-half') +
+                card('Ongoing', ongoing, 'text-amber-600', 'fa-route') +
+                card('Completed (Buwan)', completedThisMonth.length, 'text-emerald-600', 'fa-circle-check') +
+                card('Revenue (Buwan)', peso(revenueThisMonth), 'text-mkpRed', 'fa-sack-dollar') +
+                card('Expenses (Buwan)', peso(expensesThisMonth), 'text-rose-600', 'fa-money-bill-trend-up');
+        }
+
+        function renderOngoingList() {
+            const list = allBookings.filter(b => ONGOING_STATUSES.includes(b.status))
+                .sort((a, b) => (bookingDateKey(a) || '9999').localeCompare(bookingDateKey(b) || '9999'));
+            document.getElementById('admin-dash-ongoing-count').innerText = `${list.length} found`;
+            const container = document.getElementById('admin-dash-ongoing-list');
+            if (list.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 text-sm py-8">Walang ongoing na booking sa ngayon.</p>`;
+                return;
+            }
+            container.innerHTML = list.map(b => `
+                <div class="p-4 flex flex-wrap items-center justify-between gap-3 hover:bg-slate-50">
+                    <div class="min-w-0">
+                        <p class="font-bold text-slate-900">${escapeHtml(b.clientName)} <span class="font-normal text-slate-400">&middot; ${escapeHtml(b.clientPhone)}</span></p>
+                        <p class="text-xs text-slate-500 mt-0.5"><i class="fa-solid fa-location-dot text-mkpRed"></i> ${escapeHtml(b.pickupLoc)} &rarr; ${escapeHtml(b.dropoffLoc)} &middot; ${escapeHtml(b.truckType)} &middot; ${escapeHtml(bookingDateKey(b))}</p>
+                    </div>
+                    <span class="text-[10px] font-bold px-2.5 py-1 rounded-full ${STATUS_COLORS[b.status] || 'bg-slate-100 text-slate-700'}">${escapeHtml(b.status)}</span>
+                </div>`).join('');
+        }
+
+        // ---------- BOOKINGS TAB ----------
+        function renderBookingsTable() {
+            const search = document.getElementById('bk-search').value.trim().toLowerCase();
+            const statusFilter = document.getElementById('bk-status-filter').value;
+            const list = allBookings.filter(b => {
+                if (statusFilter && b.status !== statusFilter) return false;
+                if (search && !(`${b.clientName} ${b.clientPhone}`.toLowerCase().includes(search))) return false;
+                return true;
+            });
+
+            const statusOptions = s => BOOKING_STATUSES.map(st => `<option value="${st}" ${st === s ? 'selected' : ''}>${st}</option>`).join('');
+
+            const tbody = document.getElementById('bk-table-body');
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">Walang nahanap na booking.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = list.map(b => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-semibold text-mkpRed"><button onclick="viewBooking('${b.id}')" class="underline cursor-pointer text-left">${escapeHtml(b.id)}</button></td>
+                    <td class="p-3"><p class="font-semibold text-slate-800">${escapeHtml(b.clientName)}</p><p class="text-slate-400">${escapeHtml(b.clientPhone)}</p>${b.clientEmail ? `<p class="text-slate-400">${escapeHtml(b.clientEmail)}</p>` : ''}</td>
+                    <td class="p-3 text-slate-600">${escapeHtml(b.pickupLoc)} &rarr; ${escapeHtml(b.dropoffLoc)}</td>
+                    <td class="p-3 text-slate-600">${escapeHtml(b.serviceType)}<br><span class="text-slate-400">${escapeHtml(b.truckType)}</span>${Number(b.helpers) > 0 ? `<br><span class="text-slate-500">+ ${Number(b.helpers)} helper(s)</span>` : ''}${bookingExtras(b)}${b.notes ? `<br><span class="block max-w-[220px] truncate italic text-slate-400" title="${escapeHtml(b.notes)}">${escapeHtml(b.notes)}</span>` : ''}</td>
+                    <td class="p-3 text-slate-600">${escapeHtml(bookingDateKey(b))}</td>
+                    <td class="p-3">
+                        <select onchange="saveBookingField('${b.id}','status',this.value)" class="text-xs border border-slate-300 rounded-lg p-1.5 bg-slate-50">${statusOptions(b.status)}</select>
+                    </td>
+                    <td class="p-3 text-right">
+                        <input type="number" step="0.01" min="0" value="${Number(b.quotedPrice) || 0}" onchange="saveBookingField('${b.id}','quotedPrice',this.value)" class="w-24 text-right text-xs border border-slate-300 rounded-lg p-1.5 bg-slate-50">
+                    </td>
+                    <td class="p-3 text-right">
+                        <button onclick="viewBooking('${b.id}')" class="text-slate-700 hover:text-slate-900 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg cursor-pointer mr-1" title="View details"><i class="fa-solid fa-eye"></i></button>
+                        <button onclick="deleteBookingRow('${b.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 bg-rose-50 hover:bg-rose-100 rounded-lg cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        async function saveBookingField(id, field, value) {
+            const body = {};
+            body[field] = field === 'quotedPrice' ? Number(value) : value;
+            if (field === 'status' && value === 'Confirmed') {
+                const cur = allBookings.find(b => b.id === id);
+                if (!cur || !(Number(cur.quotedPrice) > 0)) { showToast('Walang Presyo', 'Maglagay muna ng quoted price bago i-Confirm ang booking.'); renderBookingsTable(); return; }
+            }
+            try {
+                const res = await mkpFetch(`/api/bookings/${encodeURIComponent(id)}`, {
+                    method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) { showToast('Hindi Na-save', data.message || 'May error sa pag-save.'); return; }
+                const idx = allBookings.findIndex(b => b.id === id);
+                if (idx >= 0) allBookings[idx] = data.booking;
+                if (field === 'status' && value === 'Confirmed') sendConfirmationEmail(data.booking);
+                renderDashboardCards(); renderOngoingList();
+            } catch (err) { /* session-expired na hinawakan */ }
+        }
+
+        async function deleteBookingRow(id) {
+            if (!confirm('Tanggalin ang booking na ito? Hindi na ito mababawi.')) return;
+            try {
+                const res = await mkpFetch(`/api/bookings/${encodeURIComponent(id)}`, { method: 'DELETE' });
+                if (res.ok) {
+                    allBookings = allBookings.filter(b => b.id !== id);
+                    renderBookingsTable(); renderDashboardCards(); renderOngoingList();
+                }
+            } catch (err) { /* session-expired na hinawakan */ }
+        }
+
+        // ---------- CALENDAR TAB ----------
+        function changeCalendarMonth(delta) {
+            calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth() + delta, 1);
+            document.getElementById('cal-day-detail').classList.add('hidden');
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const y = calendarViewDate.getFullYear(), m = calendarViewDate.getMonth();
+            document.getElementById('cal-month-label').innerText =
+                calendarViewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            const countsByDay = {};
+            allBookings.forEach(b => {
+                const key = bookingDateKey(b);
+                if (key && key.startsWith(`${y}-${String(m + 1).padStart(2, '0')}`)) {
+                    countsByDay[key] = (countsByDay[key] || 0) + 1;
+                }
+            });
+
+            const firstDow = new Date(y, m, 1).getDay();
+            const daysInMonth = new Date(y, m + 1, 0).getDate();
+            const todayKey = localDateKey(new Date());
+
+            let cells = '';
+            for (let i = 0; i < firstDow; i++) cells += `<div></div>`;
+            for (let d = 1; d <= daysInMonth; d++) {
+                const key = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const count = countsByDay[key] || 0;
+                const isToday = key === todayKey;
+                cells += `
+                    <button onclick="showCalendarDay('${key}')" class="aspect-square rounded-xl border p-1 sm:p-2 flex flex-col items-center justify-start cursor-pointer transition ${isToday ? 'border-mkpRed bg-red-50' : 'border-slate-200 hover:bg-slate-50'} ${selectedCalendarDay === key ? 'ring-2 ring-mkpRed' : ''}">
+                        <span class="text-[10px] sm:text-xs font-bold ${isToday ? 'text-mkpRed' : 'text-slate-600'}">${d}</span>
+                        ${count > 0 ? `<span class="mt-1 text-[9px] sm:text-[10px] font-extrabold bg-mkpRed text-white rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center">${count}</span>` : ''}
+                    </button>`;
+            }
+            document.getElementById('cal-grid').innerHTML = cells;
+        }
+
+        // ---- Bookings of the selected day, drawn as one downloadable image ----
+        const CAL_FONT = 'Inter, "Segoe UI", Arial, sans-serif';
+        const CAL_PILL = { 'Pending': ['#fef3c7', '#92400e'], 'Confirmed': ['#dbeafe', '#1e40af'], 'Dispatched': ['#e0e7ff', '#3730a3'], 'In-Transit': ['#f3e8ff', '#6b21a8'], 'Completed': ['#d1fae5', '#065f46'], 'Cancelled': ['#fee2e2', '#991b1b'] };
+        function calWrap(ctx, text, maxW, maxLines) {
+            const words = String(text == null ? '' : text).replace(/\s+/g, ' ').trim().split(' '), lines = []; let cur = '';
+            for (const w of words) {
+                const t = cur ? cur + ' ' + w : w;
+                if (ctx.measureText(t).width <= maxW) { cur = t; continue; }
+                if (cur) lines.push(cur);
+                cur = w;
+                while (cur.length > 1 && ctx.measureText(cur).width > maxW) {
+                    let i = cur.length; while (i > 1 && ctx.measureText(cur.slice(0, i)).width > maxW) i--;
+                    lines.push(cur.slice(0, i)); cur = cur.slice(i);
+                }
+            }
+            if (cur) lines.push(cur);
+            if (maxLines && lines.length > maxLines) { lines.length = maxLines; lines[maxLines - 1] = lines[maxLines - 1].replace(/.{0,3}$/, '') + '...'; }
+            return lines.length ? lines : [''];
+        }
+        function calCardLayout(ctx, b, w) {
+            const PAD = 22, LBL = 104, valW = w - PAD * 2 - LBL;
+            const addons = [Number(b.helpers) > 0 ? b.helpers + ' helper' + (Number(b.helpers) > 1 ? 's' : '') : '', b.jackPallet ? 'Jack Pallet' : '', Number(b.floors) > 0 ? b.floors + ' floor' + (Number(b.floors) > 1 ? 's' : '') : ''].filter(Boolean).join(', ') || 'None';
+            const rows = [
+                ['Client', (b.clientName || '-') + (b.clientPhone ? '  |  ' + b.clientPhone : '')],
+                ['Service', b.serviceType || '-'], ['Truck', b.truckType || '-'],
+                ['Pick-up', b.pickupLoc || '-'], ['Drop-off', b.dropoffLoc || '-'],
+                ['Add-ons', addons], ['Payment', b.paymentMode || '-'],
+                ['Price', Number(b.quotedPrice) > 0 ? peso(b.quotedPrice) : 'Not yet quoted'],
+                ['Notes', b.notes || '-']
+            ];
+            ctx.font = '500 16px ' + CAL_FONT;
+            const items = rows.map(([k, v]) => ({ k, lines: calWrap(ctx, v, valW, k === 'Notes' ? 5 : 3) }));
+            const h = PAD + 34 + items.reduce((sum, it) => sum + it.lines.length * 23 + 9, 0) + PAD - 9;
+            return { items, h, PAD, LBL };
+        }
+        function calDrawCard(ctx, b, L, x, y, w) {
+            ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.roundRect(x, y, w, L.h, 16); ctx.fill(); ctx.stroke();
+            ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+            ctx.fillStyle = '#0f172a'; ctx.font = '800 19px ' + CAL_FONT; ctx.fillText(b.id || '', x + L.PAD, y + L.PAD + 18);
+            const st = b.status || 'Pending', pc = CAL_PILL[st] || ['#e2e8f0', '#334155'];
+            ctx.font = '700 13px ' + CAL_FONT; const pw = ctx.measureText(st).width + 26;
+            ctx.fillStyle = pc[0]; ctx.beginPath(); ctx.roundRect(x + w - L.PAD - pw, y + L.PAD, pw, 26, 13); ctx.fill();
+            ctx.fillStyle = pc[1]; ctx.textAlign = 'center'; ctx.fillText(st, x + w - L.PAD - pw / 2, y + L.PAD + 18); ctx.textAlign = 'left';
+            let cy = y + L.PAD + 34;
+            ctx.strokeStyle = '#f1f5f9'; ctx.beginPath(); ctx.moveTo(x + L.PAD, cy - 8); ctx.lineTo(x + w - L.PAD, cy - 8); ctx.stroke();
+            for (const it of L.items) {
+                ctx.fillStyle = '#94a3b8'; ctx.font = '700 12px ' + CAL_FONT; ctx.fillText(it.k.toUpperCase(), x + L.PAD, cy + 16);
+                ctx.fillStyle = '#1e293b'; ctx.font = '500 16px ' + CAL_FONT;
+                it.lines.forEach((ln, i) => ctx.fillText(ln, x + L.PAD + L.LBL, cy + 16 + i * 23));
+                cy += it.lines.length * 23 + 9;
+            }
+        }
+        function buildDayImage(dateKey, list) {
+            const W = 1000, M = 28, GAP = 18, HEAD = 112, FOOT = 50, mc = document.createElement('canvas').getContext('2d');
+            const layouts = list.map(b => calCardLayout(mc, b, W - M * 2));
+            const H = HEAD + layouts.reduce((sum, l) => sum + l.h + GAP, 0) + FOOT, S = H > 7000 ? 1 : 2;
+            const cv = document.createElement('canvas'); cv.width = W * S; cv.height = H * S;
+            const ctx = cv.getContext('2d'); ctx.scale(S, S);
+            ctx.fillStyle = '#f1f5f9'; ctx.fillRect(0, 0, W, H);
+            ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, W, HEAD);
+            ctx.fillStyle = '#dc2626'; ctx.fillRect(0, HEAD - 6, W, 6);
+            const long = new Date(dateKey + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+            ctx.fillStyle = '#94a3b8'; ctx.font = '700 13px ' + CAL_FONT; ctx.fillText('MKP TRUCKING SERVICE  -  BOOKINGS', M, 40);
+            ctx.fillStyle = '#ffffff'; ctx.font = '800 30px ' + CAL_FONT; ctx.fillText(long, M, 82);
+            ctx.textAlign = 'right'; ctx.fillStyle = '#fca5a5'; ctx.font = '800 22px ' + CAL_FONT;
+            ctx.fillText(list.length + (list.length === 1 ? ' booking' : ' bookings'), W - M, 82);
+            let y = HEAD + GAP;
+            list.forEach((b, i) => { calDrawCard(ctx, b, layouts[i], M, y, W - M * 2); y += layouts[i].h + GAP; });
+            ctx.textAlign = 'center'; ctx.fillStyle = '#94a3b8'; ctx.font = '500 12px ' + CAL_FONT;
+            ctx.fillText('Generated ' + new Date().toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }), W / 2, H - 20);
+            return cv.toDataURL('image/png');
+        }
+        function calListHtml(list) {
+            return list.map(b => `
+                    <div class="p-3 sm:p-4 flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <p class="font-semibold text-slate-800">${escapeHtml(b.clientName)} <span class="text-slate-400 font-normal">&middot; ${escapeHtml(b.serviceType)}</span></p>
+                            <p class="text-xs text-slate-500">${escapeHtml(b.pickupLoc)} &rarr; ${escapeHtml(b.dropoffLoc)}</p>
+                        </div>
+                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full ${STATUS_COLORS[b.status] || 'bg-slate-100 text-slate-700'}">${escapeHtml(b.status)}</span>
+                    </div>`).join('');
+        }
+
+        function showCalendarDay(dateKey) {
+            selectedCalendarDay = dateKey;
+            renderCalendar();
+            const list = allBookings.filter(b => bookingDateKey(b) === dateKey);
+            const panel = document.getElementById('cal-day-detail'), box = document.getElementById('cal-day-list'), dl = document.getElementById('cal-day-dl');
+            document.getElementById('cal-day-title').innerText = `Mga Booking sa ${dateKey} (${list.length})`;
+            dl.classList.add('hidden');
+            if (list.length === 0) {
+                box.innerHTML = `<p class="text-center text-slate-400 text-sm py-6">Walang booking sa araw na ito.</p>`;
+            } else {
+                try {
+                    const url = buildDayImage(dateKey, list);
+                    let html = `<div class="p-3 sm:p-4"><img src="${url}" alt="Bookings on ${dateKey}" class="w-full rounded-xl border border-slate-200 shadow-sm"></div>`;
+                    dl.href = url; dl.download = `MKP-bookings-${dateKey}.png`; dl.classList.remove('hidden');
+                    if (list.length > 1) {
+                        html += `<div class="px-3 sm:px-4 pt-2 pb-1 border-t border-slate-100"><h4 class="text-xs font-extrabold uppercase tracking-wide text-slate-500 mt-3"><i class="fa-solid fa-image text-mkpRed mr-2"></i>Each booking as a separate image</h4></div>
+                            <div class="p-3 sm:p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">` + list.map(b => {
+                            const one = buildDayImage(dateKey, [b]), fn = `MKP-booking-${String(b.id).replace(/[^A-Za-z0-9-]/g, '')}.png`;
+                            return `<div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
+                                <div class="flex items-center justify-between gap-2 p-3 bg-white border-b border-slate-200">
+                                    <p class="text-sm font-bold text-slate-800 truncate">${escapeHtml(b.id)} <span class="text-slate-400 font-normal">&middot; ${escapeHtml(b.clientName)}</span></p>
+                                    <a href="${one}" download="${fn}" class="shrink-0 bg-mkpRed hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-lg cursor-pointer"><i class="fa-solid fa-download mr-1"></i>Download Image</a>
+                                </div>
+                                <img src="${one}" alt="Booking ${escapeHtml(b.id)}" class="w-full">
+                            </div>`;
+                        }).join('') + `</div>`;
+                    }
+                    box.innerHTML = html;
+                } catch (e) { console.error(e); box.innerHTML = calListHtml(list); }
+            }
+            panel.classList.remove('hidden');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // ---------- SALES REPORTS & ANALYTICS TAB ----------
+        function setAnalyticsQuickFilter(mode) {
+            analyticsMode = mode;
+            const today = new Date();
+            let start = '', end = '';
+            if (mode === 'today') { start = end = localDateKey(today); }
+            else if (mode === 'week') {
+                const dow = (today.getDay() + 6) % 7;
+                const s0 = new Date(today); s0.setDate(today.getDate() - dow);
+                const e0 = new Date(s0); e0.setDate(s0.getDate() + 6);
+                start = localDateKey(s0); end = localDateKey(e0);
+            } else if (mode === 'month') {
+                start = localDateKey(new Date(today.getFullYear(), today.getMonth(), 1));
+                end = localDateKey(new Date(today.getFullYear(), today.getMonth() + 1, 0));
+            } else { start = ''; end = ''; }
+            document.getElementById('an-start-date').value = start;
+            document.getElementById('an-end-date').value = end;
+            renderAnalytics();
+        }
+        function applyAnalyticsFilter() { analyticsMode = 'custom'; renderAnalytics(); }
+
+        function destroyChart(key) { if (chartInstances[key]) { chartInstances[key].destroy(); delete chartInstances[key]; } }
+
+        function renderAnalytics() {
+            const start = document.getElementById('an-start-date').value;
+            const end = document.getElementById('an-end-date').value;
+            const inRange = b => { const k = bookingDateKey(b); return (!start || k >= start) && (!end || k <= end); };
+            const list = allBookings.filter(inRange);
+            const completed = list.filter(b => b.status === 'Completed');
+            const cancelled = list.filter(b => b.status === 'Cancelled');
+            const totalRevenue = completed.reduce((s, b) => s + (Number(b.quotedPrice) || 0), 0);
+            const decided = list.length - list.filter(b => b.status === 'Pending' || b.status === 'Confirmed').length;
+            const completionRate = decided > 0 ? Math.round((completed.length / decided) * 100) : 0;
+            const avgValue = completed.length ? totalRevenue / completed.length : 0;
+
+            const card = (label, value, cls) => `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">${label}</p>
+                    <p class="text-xl sm:text-2xl font-extrabold mt-1 ${cls}">${value}</p>
+                </div>`;
+            document.getElementById('an-cards').innerHTML =
+                card('Total Revenue', peso(totalRevenue), 'text-mkpRed') +
+                card('Total Bookings', list.length, 'text-slate-900') +
+                card('Completion Rate', completionRate + '%', 'text-emerald-600') +
+                card('Avg. Booking Value', peso(avgValue), 'text-mkpBlue');
+
+            // ----- Revenue trend (ayon sa araw, Completed bookings lang) -----
+            const revByDay = {};
+            completed.forEach(b => { const k = bookingDateKey(b); revByDay[k] = (revByDay[k] || 0) + (Number(b.quotedPrice) || 0); });
+            const days = Object.keys(revByDay).sort();
+            destroyChart('revenue');
+            chartInstances.revenue = new Chart(document.getElementById('chart-revenue'), {
+                type: 'line',
+                data: { labels: days, datasets: [{ label: 'Revenue', data: days.map(d => revByDay[d]), borderColor: '#dc2626', backgroundColor: 'rgba(220,38,38,0.1)', fill: true, tension: 0.3 }] },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            // ----- Bookings by Status -----
+            const byStatus = {};
+            BOOKING_STATUSES.forEach(s => byStatus[s] = 0);
+            list.forEach(b => { byStatus[b.status] = (byStatus[b.status] || 0) + 1; });
+            destroyChart('status');
+            chartInstances.status = new Chart(document.getElementById('chart-status'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(byStatus), datasets: [{ data: Object.values(byStatus), backgroundColor: ['#94a3b8', '#38bdf8', '#f59e0b', '#f97316', '#10b981', '#f43f5e'] }] },
+                options: { responsive: true }
+            });
+
+            // ----- Bookings by Service Type -----
+            const byService = {};
+            list.forEach(b => { byService[b.serviceType] = (byService[b.serviceType] || 0) + 1; });
+            destroyChart('service');
+            chartInstances.service = new Chart(document.getElementById('chart-service'), {
+                type: 'bar',
+                data: { labels: Object.keys(byService), datasets: [{ label: 'Bookings', data: Object.values(byService), backgroundColor: '#1e3a8a' }] },
+                options: { responsive: true, plugins: { legend: { display: false } }, indexAxis: 'y' }
+            });
+
+            // ----- Bookings by Truck Type -----
+            const byTruck = {};
+            list.forEach(b => { byTruck[b.truckType] = (byTruck[b.truckType] || 0) + 1; });
+            destroyChart('truck');
+            chartInstances.truck = new Chart(document.getElementById('chart-truck'), {
+                type: 'bar',
+                data: { labels: Object.keys(byTruck), datasets: [{ label: 'Bookings', data: Object.values(byTruck), backgroundColor: '#f97316' }] },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+        }
+
+        // ---------- EXPENSES TAB ----------
+        function getExpensePeriodRange(period) {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            if (period === 'day') { const k = localDateKey(today); return { start: k, end: k, label: `Ngayong araw (${k})` }; }
+            if (period === 'week') {
+                const dow = (today.getDay() + 6) % 7;
+                const s0 = new Date(today); s0.setDate(today.getDate() - dow);
+                const e0 = new Date(s0); e0.setDate(s0.getDate() + 6);
+                return { start: localDateKey(s0), end: localDateKey(e0), label: `Linggong ito` };
+            }
+            if (period === 'month') {
+                const s0 = new Date(today.getFullYear(), today.getMonth(), 1);
+                const e0 = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                return { start: localDateKey(s0), end: localDateKey(e0), label: `Buwang ito` };
+            }
+            return { start: '', end: '', label: 'Lahat ng record' };
+        }
+
+        function setExpensePeriod(period) { expensePeriod = period; renderExpensesTable(); }
+
+        function renderExpensesTable() {
+            const range = getExpensePeriodRange(expensePeriod);
+            const inRange = e => (!range.start || String(e.date) >= range.start) && (!range.end || String(e.date) <= range.end);
+            const periodExpenses = allExpenses.filter(inRange).sort((a, b) => String(b.date).localeCompare(String(a.date)));
+            const totalExpenses = periodExpenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+
+            const bookingInRange = b => { const k = bookingDateKey(b); return (!range.start || k >= range.start) && (!range.end || k <= range.end); };
+            const revenueInRange = allBookings.filter(b => b.status === 'Completed' && bookingInRange(b)).reduce((s, b) => s + (Number(b.quotedPrice) || 0), 0);
+
+            ['day', 'week', 'month', 'all'].forEach(k => {
+                const btn = document.getElementById(`exp-period-${k}`);
+                if (btn) btn.className = 'text-xs font-semibold px-3 py-2 rounded-lg cursor-pointer ' +
+                    (k === expensePeriod ? 'bg-mkpRed text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200');
+            });
+
+            document.getElementById('exp-total').innerText = peso(totalExpenses);
+            document.getElementById('exp-net').innerText = peso(revenueInRange - totalExpenses);
+
+            const tbody = document.getElementById('exp-table-body');
+            tbody.innerHTML = periodExpenses.length === 0
+                ? `<tr><td colspan="6" class="text-center py-8 text-slate-400">Walang gastusin sa napiling period.</td></tr>`
+                : periodExpenses.map(e => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 text-slate-500">${escapeHtml(e.date)}</td>
+                        <td class="p-3 font-semibold text-slate-700">${escapeHtml(e.category)}</td>
+                        <td class="p-3 text-slate-600">${escapeHtml(e.description)}</td>
+                        <td class="p-3 text-right font-bold text-rose-600">${peso(e.amount)}</td>
+                        <td class="p-3 text-slate-500 text-xs">${escapeHtml(e.recordedBy)}</td>
+                        <td class="p-3 text-right"><button onclick="deleteExpenseRow('${e.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 bg-rose-50 hover:bg-rose-100 rounded-lg cursor-pointer"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>`).join('');
+        }
+
+        function openAddExpenseModal() {
+            document.getElementById('new-exp-date').value = localDateKey(new Date());
+            document.getElementById('add-expense-modal').classList.remove('hidden');
+            document.getElementById('add-expense-modal').classList.add('flex');
+        }
+
+        async function submitAddExpense(event) {
+            event.preventDefault();
+            const body = {
+                category: document.getElementById('new-exp-category').value,
+                description: document.getElementById('new-exp-desc').value,
+                amount: document.getElementById('new-exp-amount').value,
+                date: document.getElementById('new-exp-date').value
+            };
+            try {
+                const res = await mkpFetch('/api/expenses', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                const data = await res.json();
+                if (!res.ok || !data.success) { showToast('Hindi Na-save', data.message || 'May error.'); return; }
+                allExpenses.unshift(data.expense);
+                document.getElementById('add-expense-modal').classList.add('hidden');
+                document.getElementById('add-expense-modal').classList.remove('flex');
+                event.target.reset();
+                renderExpensesTable(); renderDashboardCards();
+            } catch (err) { /* session-expired na hinawakan */ }
+        }
+
+        async function deleteExpenseRow(id) {
+            if (!confirm('Tanggalin ang gastos na ito?')) return;
+            try {
+                const res = await mkpFetch(`/api/expenses/${encodeURIComponent(id)}`, { method: 'DELETE' });
+                if (res.ok) { allExpenses = allExpenses.filter(e => e.id !== id); renderExpensesTable(); renderDashboardCards(); }
+            } catch (err) { /* session-expired na hinawakan */ }
+        }
+
+        // ---------- SETTINGS (palitan ang PIN) ----------
+        function openAdminSettingsModal() {
+            document.getElementById('admin-settings-modal').classList.remove('hidden');
+            document.getElementById('admin-settings-modal').classList.add('flex');
+        }
+        async function submitChangePin(event) {
+            event.preventDefault();
+            const newPin = document.getElementById('new-admin-pin').value;
+            try {
+                const res = await mkpFetch('/api/admin/change-pin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ newPin }) });
+                const data = await res.json();
+                if (!res.ok || !data.success) { showToast('Hindi Na-save', data.message || 'May error.'); return; }
+                document.getElementById('admin-settings-modal').classList.add('hidden');
+                document.getElementById('admin-settings-modal').classList.remove('flex');
+                event.target.reset();
+                showToast('Settings', 'Matagumpay na napalitan ang PIN.');
+            } catch (err) { /* session-expired na hinawakan */ }
+        }
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getFirestore, collection, doc, getDocs, setDoc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        // >>> I-PASTE DITO ANG FIREBASE CONFIG MO (Project settings > Your apps > Web app) <<<
+        const firebaseConfig = {
+            apiKey: "AIzaSyCIa_Jyw7jdNn66kxARzo09c8FPMVNTH2Q",
+            authDomain: "mkp-trucking.firebaseapp.com",
+            projectId: "mkp-trucking",
+            appId: "1:268263000216:web:7ccae7f70b3fc28954e8ed"
+        };
+
+        const app = initializeApp(firebaseConfig), auth = getAuth(app), db = getFirestore(app);
+        window.__fbResolve({
+            login: (e, p) => signInWithEmailAndPassword(auth, e, p),
+            logout: () => signOut(auth),
+            user: () => new Promise(res => { const off = onAuthStateChanged(auth, u => { off(); res(u); }); }),
+            pass: p => updatePassword(auth.currentUser, p),
+            list: async c => (await getDocs(query(collection(db, c), orderBy('createdAt', 'desc')))).docs.map(d => ({ ...d.data(), id: d.id })),
+            add: (c, id, data) => setDoc(doc(db, c, id), data),
+            patch: (c, id, data) => updateDoc(doc(db, c, id), data),
+            del: (c, id) => deleteDoc(doc(db, c, id))
+        });
+    </script>
+</body>
+</html>
