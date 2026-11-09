@@ -29,6 +29,7 @@
     <!-- Chart.js para sa Sales Reports & Analytics -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -305,13 +306,13 @@
                         <div class="w-14 h-14 bg-red-100 text-mkpRed rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed group-hover:text-white transition">
                             <i class="fa-solid fa-boxes-stacked"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-slate-900">Goods Delivery Services</h3>
+                        <h3 class="text-xl font-bold text-slate-900">Equipment</h3>
                         <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
                             Dependable transportation for businesses, retailers, suppliers, and commercial clients requiring general goods and merchandise delivery.
                         </p>
                     </div>
                     <div class="pt-6 mt-6 border-t border-slate-100">
-                        <button type="button" onclick="openServiceInfo('Goods Delivery')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
+                        <button type="button" onclick="openServiceInfo('Equipment')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
                             <span>View Details &amp; Book</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
@@ -324,13 +325,13 @@
                         <div class="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed transition">
                             <i class="fa-solid fa-truck-medical"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-slate-900">Medical Supplies Delivery</h3>
+                        <h3 class="text-xl font-bold text-slate-900">Medical Equipment</h3>
                         <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
                             Specialized transport support for clinics, hospitals, pharmacies, and distributors of appropriately packaged, non-hazardous medical items.
                         </p>
                     </div>
                     <div class="pt-6 mt-6 border-t border-slate-100">
-                        <button type="button" onclick="openServiceInfo('Medical Supplies')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
+                        <button type="button" onclick="openServiceInfo('Medical Equipment')" class="w-full text-left text-mkpRed font-semibold text-xs sm:text-sm flex items-center justify-between hover:underline">
                             <span>View Details &amp; Book</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
@@ -381,7 +382,7 @@
                         <div class="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-2xl group-hover:bg-mkpRed transition">
                             <i class="fa-solid fa-hard-hat"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-slate-900">Construction Supplies Delivery</h3>
+                        <h3 class="text-xl font-bold text-slate-900">Business Client Services</h3>
                         <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
                             Reliable logistics support for construction suppliers and contractors moving building materials to project locations.
                         </p>
@@ -620,8 +621,8 @@
                                         <option value="House Moving">House Moving</option>
                                         <option value="Office Relocation">Office Relocation</option>
                                         <option value="Condo Relocation">Condominium Relocation</option>
-                                        <option value="Goods Delivery">General Goods Delivery</option>
-                                        <option value="Medical Supplies">Medical Supplies Delivery</option>
+                                        <option value="Equipment">Equipment</option>
+                                        <option value="Medical Equipment">Medical Equipment</option>
                                         <option value="Warehouse Transfer">Warehouse Transfer</option>
                                         <option value="Telco Equipment">Telco Equipment Transport</option>
                                     </select>
@@ -874,7 +875,10 @@
                 <div id="cal-day-detail" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
                         <h3 id="cal-day-title" class="font-bold text-slate-900"></h3>
-                        <button onclick="document.getElementById('cal-day-detail').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                        <div class="flex items-center gap-3">
+                            <button id="cal-viewall-btn" onclick="viewDayBookings(selectedCalendarDay)" class="hidden text-xs font-bold px-3 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-700 cursor-pointer"><i class="fa-solid fa-images mr-1"></i>View All</button>
+                            <button onclick="document.getElementById('cal-day-detail').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
                     </div>
                     <div id="cal-day-list" class="divide-y divide-slate-100"></div>
                 </div>
@@ -1428,11 +1432,12 @@
         }
 
         // ===================== SERVICE TERMS & CONDITIONS =====================
-        const EQUIP_SERVICES = ['Goods Delivery', 'Medical Supplies', 'Telco Equipment'];
+        const EQUIP_SERVICES = ['Equipment', 'Medical Equipment', 'Telco Equipment'];
         const GALLERIES = {
             equip: ['images/equipment-guide.jpg'],
             pack: ['images/hm-moving-day-policy.jpg', 'images/hm-no-packing.jpg', 'images/hm-cling-wrap.jpg', 'images/hm-wrap-big-items.jpg'],
-            dismantle: ['images/hm-dismantle.jpg']
+            dismantle: ['images/hm-dismantle.jpg'],
+            condo: ['images/condo-clearance-guide.jpg', 'images/condo-l300-shuttle.jpg']
         };
         let svcCurrent = '';
         function openGallery(key, i) {
@@ -1465,12 +1470,22 @@
                 'Dismantling depends on the item to be dismantled. You may send a picture of the item so we can check whether our team can handle it.',
                 '<strong>Items we do not dismantle:</strong> split-type aircon units; cabinets made of weak or low-quality wood (<em>kusot</em>); carpenter&#39;s duties and other electrical works.'
             ]) + svcGallery('dismantle')) +
-            svcCard('fa-triangle-exclamation', 'Exclusions &amp; Reminders',
+            svcExclusions();
+        }
+        function svcExclusions() {
+            return svcCard('fa-triangle-exclamation', 'Exclusions &amp; Reminders',
                 svcSub('Not included') + svcDots(['Building permit fees and road use fee', 'Dismantling of split-type aircon units', 'Disconnection and reconnection of appliances']) +
                 svcSub('Reminders') + svcDots([
                     'To avoid delays, please inform your Village Administrator or Building Administrator (whichever is applicable) of your upcoming move-out and move-in, and secure a gate pass accordingly.',
                     'For a safe and convenient move, please make sure you protect all your items and give the necessary instructions to the helper and driver on how to handle them.'
                 ]));
+        }
+        function svcCondo() {
+            return svcCard('fa-building', 'Truck Access &amp; Vertical Clearance', svcNum([
+                'The required vertical clearance for a <strong>6-wheeler closed van is 3 m up to 3.5 m.</strong>',
+                'If the truck will not fit, please ask the condo&#39;s or building&#39;s admin office where the truck can park and whether the truck can get close to the service elevator.',
+                '<strong>Inform us immediately</strong> so we can provide you with the correct quotation.'
+            ]) + svcGallery('condo') + '<video controls playsinline preload="metadata" class="w-full mt-4 rounded-xl bg-black"><source src="videos/condo-access.mp4" type="video/mp4"></video>') + svcExclusions();
         }
         function svcCancellation() {
             return svcCard('fa-ban', 'Cancellation Policy', svcNum([
@@ -1480,7 +1495,7 @@
         }
         function openServiceInfo(service) {
             svcCurrent = service;
-            const body = (EQUIP_SERVICES.includes(service) ? svcEquipment() : '') + (service === 'House Moving' ? svcHouseMoving() : '') + svcCancellation();
+            const body = (EQUIP_SERVICES.includes(service) ? svcEquipment() : '') + (service === 'House Moving' ? svcHouseMoving() : '') + (['Office Relocation', 'Condo Relocation'].includes(service) ? svcCondo() : '') + svcCancellation();
             $('svcBox').innerHTML = `
                 <div class="bg-slate-900 text-white p-5 sm:p-6 flex items-start justify-between gap-4">
                     <div><p class="text-[11px] uppercase tracking-widest text-slate-400">Terms &amp; Conditions</p><h3 class="text-xl sm:text-2xl font-extrabold">${serviceLabel(service)}</h3></div>
@@ -1504,8 +1519,7 @@
 
         // ===================== ADMIN: BOOKING DETAILS VIEW =====================
         const BV_BADGE = { 'Pending': 'bg-amber-100 text-amber-800', 'Confirmed': 'bg-blue-100 text-blue-800', 'Dispatched': 'bg-indigo-100 text-indigo-800', 'In-Transit': 'bg-purple-100 text-purple-800', 'Completed': 'bg-emerald-100 text-emerald-800', 'Cancelled': 'bg-red-100 text-red-800' };
-        function viewBooking(id) {
-            const b = allBookings.find(x => x.id === id); if (!b) return;
+        function bvBuild(b, compact) {
             const E = escapeHtml, t = truckByName(b.truckType);
             const dt = s => s ? new Date(s).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
             const pd = b.preferredDate ? new Date(b.preferredDate + 'T00:00:00').toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-';
@@ -1521,13 +1535,12 @@
             const org = b.pickupPin || b.pickupLoc, dst = b.dropoffPin || b.dropoffLoc;
             const route = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(org)}&destination=${encodeURIComponent(dst)}&travelmode=driving`;
             const inp = 'w-full text-sm border border-slate-300 rounded-xl p-2.5 bg-slate-50 focus:ring-2 focus:ring-mkpRed focus:outline-none';
-            $('bvBox').innerHTML = `
-                <div class="bg-slate-900 text-white p-5 sm:p-6 flex items-start justify-between gap-4">
+            const actions = compact ? '' : `<button type="button" data-export-hide onclick="downloadBooking('${E(b.id)}')" class="h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold"><i class="fa-solid fa-download mr-1"></i>Download Image</button><button type="button" data-export-hide onclick="closeBookingView()" aria-label="Close" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20"><i class="fa-solid fa-xmark"></i></button>`;
+            const head = `<div class="bg-slate-900 text-white p-5 sm:p-6 flex items-start justify-between gap-4">
                     <div><p class="text-[11px] uppercase tracking-widest text-slate-400">Booking</p><h3 class="text-xl sm:text-2xl font-extrabold">${E(b.id)}</h3><p class="text-xs text-slate-400 mt-1">Submitted ${E(dt(b.createdAt))}</p></div>
-                    <div class="flex items-center gap-3"><span class="text-xs font-bold px-3 py-1.5 rounded-full ${BV_BADGE[b.status] || 'bg-slate-200 text-slate-800'}">${E(b.status)}</span><button onclick="closeBookingView()" aria-label="Close" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20"><i class="fa-solid fa-xmark"></i></button></div>
-                </div>
-                <div class="p-4 sm:p-6 space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center gap-3"><span class="text-xs font-bold px-3 py-1.5 rounded-full ${BV_BADGE[b.status] || 'bg-slate-200 text-slate-800'}">${E(b.status)}</span>${actions}</div>
+                </div>`;
+            const sections = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         ${card('fa-user', 'Client', row('Name', E(b.clientName)) + row('Phone', `<a href="tel:${E(b.clientPhone)}" class="text-mkpRed underline">${E(b.clientPhone)}</a>`) + row('Email', b.clientEmail ? `<a href="mailto:${E(b.clientEmail)}" class="text-mkpRed underline">${E(b.clientEmail)}</a>` : '-'))}
                         ${card('fa-calendar-day', 'Schedule & Price', row('Preferred Date of Pickup', E(pd)) + row('Quoted Price', E(peso(b.quotedPrice))) + row('Confirmation Email', b.confirmationSentAt ? 'Sent ' + E(dt(b.confirmationSentAt)) : 'Not sent'))}
                     </div>
@@ -1538,12 +1551,51 @@
                         row('Always Included', 'Hand Trolley, Push Cart') +
                         `<div class="pt-2"><p class="text-[11px] uppercase font-bold text-slate-400 mb-2">Add-ons</p>${chips.length ? chips.map(chip).join('') : '<p class="text-sm font-semibold text-slate-800">None</p>'}</div>`)}
                     ${card('fa-camera', `Photos of Items to be Loaded (${ph.length})`, ph.length ? `<div class="grid grid-cols-3 sm:grid-cols-5 gap-2">${ph.map((p, i) => `<img src="${p}" onclick="openItemPhotos('${E(b.id)}', ${i})" class="w-full aspect-square object-cover rounded-lg border border-slate-200 cursor-zoom-in" alt="Item photo ${i + 1}">`).join('')}</div>` : '<p class="text-sm text-slate-500">No photos uploaded.</p>')}
-                    ${card('fa-note-sticky', 'Client Notes', `<p class="text-sm text-slate-800 whitespace-pre-line break-words">${b.notes ? E(b.notes) : '-'}</p>`)}
-                    ${card('fa-user-shield', 'Admin', `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-[11px] uppercase font-bold text-slate-400">Status</label><select onchange="modalSave('${E(b.id)}','status',this.value)" class="${inp}">${BOOKING_STATUSES.map(s => `<option ${s === b.status ? 'selected' : ''}>${s}</option>`).join('')}</select></div><div><label class="text-[11px] uppercase font-bold text-slate-400">Quoted Price (PHP)</label><input type="number" min="0" step="0.01" value="${Number(b.quotedPrice) || 0}" onchange="modalSave('${E(b.id)}','quotedPrice',this.value)" class="${inp}"></div></div><label class="block text-[11px] uppercase font-bold text-slate-400 mt-3">Admin Notes</label><textarea rows="2" onchange="modalSave('${E(b.id)}','adminNotes',this.value)" class="${inp}">${E(b.adminNotes || '')}</textarea><p class="text-[11px] text-slate-400 mt-2">Last updated ${E(dt(b.updatedAt))}</p>`)}
-                </div>`;
-            $('bookingModal').classList.remove('hidden');
-            $('bookingModal').scrollTop = 0;
+                    ${card('fa-note-sticky', 'Client Notes', `<p class="text-sm text-slate-800 whitespace-pre-line break-words">${b.notes ? E(b.notes) : '-'}</p>`)}`;
+            const admin = `<div data-export-hide>${card('fa-user-shield', 'Admin', `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-[11px] uppercase font-bold text-slate-400">Status</label><select onchange="modalSave('${E(b.id)}','status',this.value)" class="${inp}">${BOOKING_STATUSES.map(s => `<option ${s === b.status ? 'selected' : ''}>${s}</option>`).join('')}</select></div><div><label class="text-[11px] uppercase font-bold text-slate-400">Quoted Price (PHP)</label><input type="number" min="0" step="0.01" value="${Number(b.quotedPrice) || 0}" onchange="modalSave('${E(b.id)}','quotedPrice',this.value)" class="${inp}"></div></div><label class="block text-[11px] uppercase font-bold text-slate-400 mt-3">Admin Notes</label><textarea rows="2" onchange="modalSave('${E(b.id)}','adminNotes',this.value)" class="${inp}">${E(b.adminNotes || '')}</textarea><p class="text-[11px] text-slate-400 mt-2">Last updated ${E(dt(b.updatedAt))}</p>`)}</div>`;
+            return { head, sections, admin };
         }
+        function bvShow() { $('bookingModal').classList.remove('hidden'); $('bookingModal').scrollTop = 0; }
+        function viewBooking(id) {
+            const b = allBookings.find(x => x.id === id); if (!b) return;
+            const p = bvBuild(b);
+            $('bvBox').innerHTML = p.head + `<div class="p-4 sm:p-6 space-y-4">${p.sections}${p.admin}</div>`;
+            bvShow();
+        }
+        function viewDayBookings(dateKey) {
+            const list = allBookings.filter(b => bookingDateKey(b) === dateKey);
+            if (!list.length) { showToast('No Bookings', 'There are no bookings on this day.'); return; }
+            const items = list.map(b => { const p = bvBuild(b, true); return `<div class="bg-slate-100 rounded-3xl overflow-hidden border border-slate-300">${p.head}<div class="p-4 sm:p-6 space-y-4">${p.sections}</div></div>`; }).join('');
+            $('bvBox').innerHTML = `
+                <div class="bg-slate-900 text-white p-5 sm:p-6 flex items-start justify-between gap-4">
+                    <div><p class="text-[11px] uppercase tracking-widest text-slate-400">Calendar</p><h3 class="text-xl sm:text-2xl font-extrabold">Bookings on ${escapeHtml(dateKey)}</h3><p class="text-xs text-slate-400 mt-1">${list.length} booking${list.length > 1 ? 's' : ''}</p></div>
+                    <div class="flex items-center gap-3"><button type="button" data-export-hide onclick="downloadDay('${escapeHtml(dateKey)}')" class="h-10 px-4 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold"><i class="fa-solid fa-download mr-1"></i>Download Image</button><button type="button" data-export-hide onclick="closeBookingView()" aria-label="Close" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20"><i class="fa-solid fa-xmark"></i></button></div>
+                </div>
+                <div class="p-4 sm:p-6 space-y-6">${items}</div>`;
+            bvShow();
+        }
+        // I-save ang laman ng view bilang PNG (walang kasamang buttons at admin controls)
+        async function exportBox(filename) {
+            if (typeof html2canvas === 'undefined') { showToast('Download', 'The image tool could not be loaded. Check your internet connection.'); return; }
+            showToast('Preparing Image', 'Please wait a moment...');
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;';
+            const clone = $('bvBox').cloneNode(true);
+            clone.querySelectorAll('[data-export-hide]').forEach(n => n.remove());
+            clone.querySelectorAll('img').forEach(i => { i.loading = 'eager'; });
+            clone.style.maxWidth = 'none'; clone.style.margin = '0';
+            wrap.appendChild(clone); document.body.appendChild(wrap);
+            try {
+                await wait(200);
+                const canvas = await html2canvas(clone, { scale: Math.min(2, 14000 / clone.scrollHeight), backgroundColor: '#f1f5f9', useCORS: true, logging: false });
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename;
+                document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+            } catch (e) { showToast('Download Failed', 'The image could not be created.'); }
+            finally { wrap.remove(); }
+        }
+        function downloadBooking(id) { exportBox('booking-' + id + '.png'); }
+        function downloadDay(key) { exportBox('bookings-' + key + '.png'); }
         function closeBookingView() { $('bookingModal').classList.add('hidden'); }
         async function modalSave(id, field, value) { await saveBookingField(id, field, value); renderBookingsTable(); viewBooking(id); }
         document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('bookingModal').classList.contains('hidden') && $('lightbox').classList.contains('hidden')) closeBookingView(); }, true);
@@ -1980,13 +2032,14 @@
             document.getElementById('cal-day-list').innerHTML = list.length === 0
                 ? `<p class="text-center text-slate-400 text-sm py-6">Walang booking sa araw na ito.</p>`
                 : list.map(b => `
-                    <div class="p-3 sm:p-4 flex flex-wrap items-center justify-between gap-2">
+                    <div onclick="viewBooking('${b.id}')" class="p-3 sm:p-4 flex flex-wrap items-center justify-between gap-2 cursor-pointer hover:bg-slate-50 transition" title="View details">
                         <div>
                             <p class="font-semibold text-slate-800">${escapeHtml(b.clientName)} <span class="text-slate-400 font-normal">&middot; ${escapeHtml(b.serviceType)}</span></p>
                             <p class="text-xs text-slate-500">${escapeHtml(b.pickupLoc)} &rarr; ${escapeHtml(b.dropoffLoc)}</p>
                         </div>
-                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full ${STATUS_COLORS[b.status] || 'bg-slate-100 text-slate-700'}">${escapeHtml(b.status)}</span>
+                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full ${STATUS_COLORS[b.status] || 'bg-slate-100 text-slate-700'}">${escapeHtml(b.status)} <i class="fa-solid fa-eye ml-1 opacity-60"></i></span>
                     </div>`).join('');
+            document.getElementById('cal-viewall-btn').classList.toggle('hidden', list.length === 0);
             panel.classList.remove('hidden');
         }
 
