@@ -539,6 +539,47 @@
         </div>
     </section>
 
+    <!-- Customer Feedback Section -->
+    <section id="feedback" class="py-20 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12 space-y-4">
+                <span class="text-mkpRed uppercase font-bold text-xs tracking-widest bg-red-100 px-3 py-1 rounded-full">Customer Feedback</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">What Our Clients Say</h2>
+                <div class="w-20 h-1.5 bg-mkpRed mx-auto rounded-full"></div>
+                <p class="text-slate-600">Feedback from clients who trusted MKP Transport Movers with their homes, offices, and equipment.</p>
+            </div>
+            <div id="feedbackGrid" class="columns-1 sm:columns-2 lg:columns-3 gap-5">
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Rhitzy Oliver" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-rhitzy-oliver.jpg" alt="Feedback from Rhitzy Oliver" loading="lazy" class="w-full h-auto block">
+                    </button>
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Shiella" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-shiella.jpg" alt="Feedback from Shiella" loading="lazy" class="w-full h-auto block">
+                    </button>
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Carlo" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-carlo.jpg" alt="Feedback from Carlo" loading="lazy" class="w-full h-auto block">
+                    </button>
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Sydney Villalongja" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-sydney-villalongja.jpg" alt="Feedback from Sydney Villalongja" loading="lazy" class="w-full h-auto block">
+                    </button>
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Rumil Bonifacio" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-rumil-bonifacio.jpg" alt="Feedback from Rumil Bonifacio" loading="lazy" class="w-full h-auto block">
+                    </button>
+                    <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Pacholo Mendoza Loor" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-pacholo-loor.jpg" alt="Feedback from Pacholo Mendoza Loor" loading="lazy" class="w-full h-auto block">
+                    </button>
+            </div>
+            <p class="text-center text-xs text-slate-400 mt-4">Tap a feedback to enlarge.</p>
+            <template id="feedbackOnHold">
+                <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Pj Ortega" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-pj-ortega.jpg" alt="Feedback from Pj Ortega" loading="lazy" class="w-full h-auto block">
+                    </button>
+                <button type="button" onclick="openFeedback(this)" aria-label="Enlarge feedback from Faye Janelle Guevara Valdes" class="block w-full mb-5 break-inside-avoid rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition bg-white cursor-zoom-in">
+                        <img src="images/feedback-faye-valdes.jpg" alt="Feedback from Faye Janelle Guevara Valdes" loading="lazy" class="w-full h-auto block">
+                    </button>
+            </template>
+        </div>
+    </section>
+
     <!-- Booking Portal & Contact Us Section -->
     <section id="contact" class="py-20 bg-slate-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -600,6 +641,27 @@
                         <div class="pl-3 border-l-2 border-emerald-500 space-y-1">
                             <a href="tel:09303076342" class="block font-bold text-slate-800 hover:text-mkpRed transition text-base">0930 307 6342</a>
                             <a href="tel:09075478946" class="block font-bold text-slate-800 hover:text-mkpRed transition text-base">0907 547 8946</a>
+                        </div>
+                    </div>
+
+                    <!-- Partners Card (para magdagdag: kopyahin ang isang logo box at palitan ang src at alt) -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 space-y-5">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-red-100 text-mkpRed rounded-2xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-handshake"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-lg">Our Partners</h4>
+                                <p class="text-xs text-slate-500">Our trusted regular business clients</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-white">
+                                <img src="images/partner-van-husen.jpg" alt="Van Husen Trading Company" loading="lazy" class="w-full aspect-square object-cover">
+                            </div>
+                            <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-white">
+                                <img src="images/partner-chosen-easy-vendo.jpg" alt="Chosen Easy Vendo" loading="lazy" class="w-full aspect-square object-cover">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1473,6 +1535,10 @@
             lbT = { name: 'Photo guide', images: GALLERIES[key] }; lbI = i || 0; showLb();
             $('lightbox').classList.remove('hidden'); document.body.classList.add('overflow-hidden');
         }
+        function openFeedback(btn) {
+            GALLERIES.feedback = [...document.querySelectorAll('#feedbackGrid img')].map(x => x.getAttribute('src'));
+            openGallery('feedback', [...document.querySelectorAll('#feedbackGrid > button')].indexOf(btn));
+        }
         function svcGallery(key) {
             const one = GALLERIES[key].length === 1;
             return `<div class="grid ${one ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'} gap-3 mt-5">${GALLERIES[key].map((s, i) => `<img src="${s}" onclick="openGallery('${key}', ${i})" class="w-full rounded-xl border border-slate-200 cursor-zoom-in bg-white" alt="Guide ${i + 1}">`).join('')}</div><p class="text-[11px] text-slate-400 mt-1">Tap an image to enlarge.</p>`;
@@ -1529,7 +1595,7 @@
         }
         function openServiceInfo(service) {
             svcCurrent = service;
-            const body = (EQUIP_SERVICES.includes(service) ? svcEquipment() : '') + (service === 'House Moving' ? svcHouseMoving() : '') + (service === 'Office Relocation' || service === 'Condo Relocation' ? svcCondo() : '') + svcWaiting() + svcCancellation();
+            const body = (EQUIP_SERVICES.includes(service) ? svcEquipment() : '') + (service === 'Office Relocation' || service === 'Condo Relocation' ? svcCondo() : '') + (service === 'House Moving' || service === 'Condo Relocation' ? svcHouseMoving() : '') + svcWaiting() + svcCancellation();
             $('svcBox').innerHTML = `
                 <div class="bg-slate-900 text-white p-5 sm:p-6 flex items-start justify-between gap-4">
                     <div><p class="text-[11px] uppercase tracking-widest text-slate-400">Terms &amp; Conditions</p><h3 class="text-xl sm:text-2xl font-extrabold">${serviceLabel(service)}</h3></div>
