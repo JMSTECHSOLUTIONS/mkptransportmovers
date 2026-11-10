@@ -2561,6 +2561,7 @@
             currentPage = name;
             const mm = document.getElementById('mobileMenu'); if (mm) mm.classList.add('hidden');
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            
         }
         function goPage(name) { if (location.hash !== '#' + name) location.hash = '#' + name; showPage(name); }
         window.addEventListener('hashchange', () => { const p = pageFromHash(); if (p && p !== currentPage) showPage(p); });
